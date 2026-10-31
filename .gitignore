@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# Xcode — пользовательские настройки и данные сборки
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+DerivedData/
+build/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Секреты и локальные конфиги
+*.xcconfig.local
+.env
