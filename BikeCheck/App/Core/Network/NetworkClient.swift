@@ -8,15 +8,33 @@
 import Foundation
 
 nonisolated final class NetworkClient {
+    
+    // MARK: - Private Properties
     private let storage: TokenStorageProtocol
     private let decoder: JSONDecoder
     
+    // MARK: - Initializers
     init(storage: TokenStorageProtocol, decoder: JSONDecoder) {
         self.storage = storage
         self.decoder = decoder
     }
     
+    // MARK: - Public Methods
     func request<T: Decodable>(_ endpoint: any Endpoint) async throws -> T {
+        let data = try await perform(endpoint)
+        do {
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            throw NetworkError.decoding(error)
+        }
+    }
+    
+    func send(_ endpoint: any Endpoint) async throws {
+        _ = try await perform(endpoint)
+    }
+    
+    // MARK: - Private Methods
+    private func perform(_ endpoint: any Endpoint) async throws -> Data {
         var request = try endpoint.makeRequest()
         
         if endpoint.requiresAuth {
@@ -48,11 +66,6 @@ nonisolated final class NetworkClient {
             let message = try? decoder.decode(ErrorResponse.self, from: data).detail
             throw NetworkError.serverError(statusCode: httpResponse.statusCode, message: message)
         }
-        
-        do {
-            return try decoder.decode(T.self, from: data)
-        } catch {
-            throw NetworkError.decoding(error)
-        }
+        return data
     }
 }
