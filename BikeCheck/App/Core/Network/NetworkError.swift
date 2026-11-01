@@ -16,16 +16,37 @@ nonisolated enum NetworkError: Error {
     case serverError(statusCode: Int, message: String?)
     case invalidResponse
     
-    var userMessage:String {
+    var userMessage: String {
         switch self {
         case .transport:
-            return "Не удалось подключиться к серверу. Проверьте интернет и попробуйте ещё раз."
+            return "Не удалось подключиться к серверу. Проверьте интернет и попробуйте ещё раз"
         case .noAuth:
-            return "Сессия истекла  Войдите снова"
+            return "Сессия истекла. Войдите снова"
         case .serverError(_, let message):
             return message ?? "Ошибка сервера, попробуйте позже"
         case .invalidResponse, .invalidURL, .decoding, .encoding:
             return "Что-то пошло не так. Попробуйте ещё раз"
+        }
+    }
+    
+    var isCancelled: Bool {
+        guard case .transport(let error) = self else {
+            return false
+        }
+        guard let urlError = error as? URLError else {
+            return false
+        }
+        return urlError.code == .cancelled
+    }
+    
+    var isRetryable: Bool {
+        switch self {
+        case .transport:
+            return true
+        case .serverError(let statusCode, _) where statusCode >= 500:
+            return true
+        default:
+            return false
         }
     }
 }
