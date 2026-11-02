@@ -9,9 +9,20 @@ import Foundation
 
 nonisolated protocol TokenStorageProtocol {
     var token: String? { get }
+    
+    func save(_ token: String) throws
+    func clear() throws
 }
 
 nonisolated final class TokenStorage: TokenStorageProtocol {
-    var token: String?
     
+    private(set) var token: String?
+    
+    func save(_ token: String) throws {
+        self.token = token
+    }
+    
+    func clear() throws {
+        self.token = nil
+    }
 }
