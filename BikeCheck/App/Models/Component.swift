@@ -20,4 +20,10 @@ nonisolated struct Component: Decodable {
 nonisolated struct NewComponent: Encodable {
     let catalogId: Int
     let installedAt: String
+    let note: String?
+}
+
+nonisolated struct UpdateComponent: Encodable {
+    let installedAt: String?
+    let note: String?
 }

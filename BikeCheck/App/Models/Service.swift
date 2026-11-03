@@ -22,6 +22,12 @@ nonisolated struct NewService: Encodable {
     let note: String?
 }
 
+nonisolated struct UpdateService: Encodable {
+    let doneAt: String?
+    let mileageKm: Int?
+    let note: String?
+}
+
 nonisolated struct ServiceHistoryItem: Decodable {
     let id: Int
     let componentId: Int

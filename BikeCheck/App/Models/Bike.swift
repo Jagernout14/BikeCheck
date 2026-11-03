@@ -21,6 +21,11 @@ nonisolated struct NewBike: Encodable {
     let photoUrl: String?
 }
 
+nonisolated struct UpdateBike: Encodable {
+    let name: String?
+    let photoUrl: String?
+}
+
 nonisolated struct BikeDetail: Decodable {
     let id: Int
     let name: String
