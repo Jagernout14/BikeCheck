@@ -15,17 +15,7 @@ nonisolated enum KeychainError: Error {
 
 nonisolated final class KeychainTokenStorage: TokenStorageProtocol {
     
-    private let service = "ru.jagernout14.BikeCheck"
-    private let account = "accessToken"
-    
-    private var baseQuery: [String: Any] {
-        [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account
-        ]
-    }
-    
+    // MARK: - Public Properties
     var token: String? {
         var query = baseQuery
         query[kSecReturnData as String] = true
@@ -48,6 +38,19 @@ nonisolated final class KeychainTokenStorage: TokenStorageProtocol {
         }
     }
     
+    // MARK: - Private Properties
+    private let service = "ru.jagernout14.BikeCheck"
+    private let account = "accessToken"
+    
+    private var baseQuery: [String: Any] {
+        [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account
+        ]
+    }
+    
+    // MARK: - Public Methods
     func clear() throws {
         let status = SecItemDelete(baseQuery as CFDictionary)
         
