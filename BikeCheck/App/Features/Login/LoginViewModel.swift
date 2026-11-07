@@ -26,6 +26,7 @@ final class LoginViewModel {
     // MARK: - Private Properties
     private let client: NetworkClient
     private let tokenStorage: TokenStorageProtocol
+    private var isLoading = false
     
     // MARK: - Callbacks
     var onSuccess: (() -> Void)?
@@ -41,10 +42,15 @@ final class LoginViewModel {
     
     // MARK: - Public Methods
     func login() {
+        guard !isLoading else { return }
+        isLoading = true
         onLoading?(true)
         Task { [weak self] in
             guard let self else { return }
-            defer { onLoading?(false) }
+            defer {
+                isLoading = false
+                onLoading?(false)
+            }
             do {
                 let loginResponse: AuthResponse = try await client.request(AuthEndpoint.login(Credentials(email: email, password: password)))
                 try tokenStorage.save(loginResponse.accessToken)
