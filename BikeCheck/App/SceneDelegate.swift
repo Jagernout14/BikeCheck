@@ -22,8 +22,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let client = NetworkClient(storage: tokenStorage, decoder: BikeCheckCoding.decoder)
         let viewModel = LoginViewModel(client: client, tokenStorage: tokenStorage)
         let loginViewController = LoginViewController(viewModel: viewModel)
-        window.rootViewController = loginViewController
+        window.rootViewController = MainTabBarController()
         
+        window.overrideUserInterfaceStyle = .dark
         window.makeKeyAndVisible()
         self.window = window
     }
