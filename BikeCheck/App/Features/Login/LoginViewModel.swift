@@ -55,6 +55,8 @@ final class LoginViewModel {
                 let loginResponse: AuthResponse = try await client.request(AuthEndpoint.login(Credentials(email: email, password: password)))
                 try tokenStorage.save(loginResponse.accessToken)
                 onSuccess?()
+            } catch NetworkError.serverError(statusCode: 401, _) {
+                onError?("Неверный email или пароль")
             } catch {
                 onError?((error as? NetworkError)?.userMessage ?? "Войти не удалось. Попробуйте еще раз")
             }

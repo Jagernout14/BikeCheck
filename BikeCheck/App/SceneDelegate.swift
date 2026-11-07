@@ -17,7 +17,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        window.rootViewController = ViewController()
+        
+        let tokenStorage = KeychainTokenStorage()
+        let client = NetworkClient(storage: tokenStorage, decoder: BikeCheckCoding.decoder)
+        let viewModel = LoginViewModel(client: client, tokenStorage: tokenStorage)
+        let loginViewController = LoginViewController(viewModel: viewModel)
+        window.rootViewController = loginViewController
+        
         window.makeKeyAndVisible()
         self.window = window
     }
