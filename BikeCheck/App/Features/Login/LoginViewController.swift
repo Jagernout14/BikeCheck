@@ -13,6 +13,9 @@ final class LoginViewController: UIViewController {
     private let loginView = LoginView()
     private let viewModel: LoginViewModel
     
+    //MARK: - Callbacks
+    var onLoginSuccess: (() -> Void)?
+    
     // MARK: - Initializers
     init(viewModel: LoginViewModel) {
         self.viewModel = viewModel
@@ -51,8 +54,8 @@ final class LoginViewController: UIViewController {
             print("Registration tapped")
         }
         
-        viewModel.onSuccess = {
-            print("Login success")
+        viewModel.onSuccess = { [weak self] in
+            self?.onLoginSuccess?()
         }
         
         viewModel.onLoading = { [weak self] isLoading in
