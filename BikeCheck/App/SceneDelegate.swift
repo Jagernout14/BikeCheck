@@ -10,6 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
+    var router: AppRouter?
     
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -18,13 +19,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
         
-        let tokenStorage = KeychainTokenStorage()
+        let tokenStorage: TokenStorageProtocol = KeychainTokenStorage()
         let client = NetworkClient(storage: tokenStorage, decoder: BikeCheckCoding.decoder)
-        let viewModel = LoginViewModel(client: client, tokenStorage: tokenStorage)
-        let loginViewController = LoginViewController(viewModel: viewModel)
-        window.rootViewController = loginViewController
-        
-        window.makeKeyAndVisible()
+        let router = AppRouter(window: window, tokenStorage: tokenStorage, client: client)
         self.window = window
+        self.router = router
+        router.start()
+        window.overrideUserInterfaceStyle = .dark
+        window.makeKeyAndVisible()
     }
 }
