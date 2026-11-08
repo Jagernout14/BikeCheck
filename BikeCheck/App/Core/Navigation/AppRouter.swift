@@ -9,16 +9,19 @@ import UIKit
 
 final class AppRouter {
     
+    // MARK: - Private Properties
     private let window: UIWindow
     private let tokenStorage: TokenStorageProtocol
     private let client: NetworkClient
     
+    // MARK: - Initializers
     init(window: UIWindow, tokenStorage: TokenStorageProtocol, client: NetworkClient) {
         self.window = window
         self.tokenStorage = tokenStorage
         self.client = client
     }
     
+    // MARK: - Public Methods
     func start() {
         if tokenStorage.token != nil {
             showMain()
@@ -27,6 +30,7 @@ final class AppRouter {
         }
     }
     
+    // MARK: - Private Methods
     private func showLogin() {
         let viewModel = LoginViewModel(client: client, tokenStorage: tokenStorage)
         let viewController = LoginViewController(viewModel: viewModel)
