@@ -50,6 +50,7 @@ final class GarageViewModel {
         }
     }
     
+    // MARK: - Private Methods
     private func resolveSelectedBike() {
         guard !bikes.isEmpty else {
             selectedBikeStorage.clear()
