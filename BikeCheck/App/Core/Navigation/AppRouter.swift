@@ -41,7 +41,7 @@ final class AppRouter {
     }
     
     private func showMain() {
-        let tabBar = MainTabBarController()
+        let tabBar = MainTabBarController(client: client)
         setRoot(tabBar)
     }
     

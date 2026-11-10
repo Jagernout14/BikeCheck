@@ -9,17 +9,33 @@ import UIKit
 
 final class MainTabBarController: UITabBarController {
     
+    // MARK: - Private Properties
+    private let client: NetworkClient
+    
+    // MARK: - Initializers
+    init(client: NetworkClient) {
+        self.client = client
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setupMainTabBar()
         setupAppearance()
     }
     
+    // MARK: - Private Methods
     private func setupMainTabBar() {
-        let garageViewController = UIViewController()
+        let storage = UserDefaultsSelectedBikeStorage()
+        let viewModel = GarageViewModel(client: client, selectedBikeStorage: storage)
+        let garageViewController = GarageViewController(viewModel: viewModel)
         let serviceHistoryViewController = UIViewController()
         
-        garageViewController.view.backgroundColor = .bcBackground
         serviceHistoryViewController.view.backgroundColor = .bcBackground
         
         garageViewController.title = "Гараж"

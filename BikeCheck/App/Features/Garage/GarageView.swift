@@ -38,8 +38,6 @@ final class GarageView: UIView {
     }
     
     private func setupBikeCard() {
-        bikeCard.layer.cornerRadius = 20
-        bikeCard.clipsToBounds = true
         bikeCard.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(bikeCard)
         
