@@ -34,6 +34,16 @@ final class GarageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        setupNavigationBar()
+    }
+    
+    // MARK: - Actions
+    @objc private func tapLogout() {
+        print("Logout tapped")
+    }
+    
+    @objc private func tapAdd() {
+        print("Add button tapped")
     }
     
     //MARK: - Private Methods
@@ -41,6 +51,22 @@ final class GarageViewController: UIViewController {
         garageView.tableView.dataSource = self
         garageView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "BikeCell")
         garageView.configureCard(title: bikes[0], subtitle: "Enduro 15.4 кг")
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "rectangle.portrait.and.arrow.right"),
+            style: .plain,
+            target: self,
+            action: #selector(tapLogout)
+        )
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "plus"),
+            style: .plain,
+            target: self,
+            action: #selector(tapAdd)
+        )
     }
 }
 
