@@ -39,14 +39,16 @@ final class MainTabBarController: UITabBarController {
         serviceHistoryViewController.view.backgroundColor = .bcBackground
         
         garageViewController.title = "Гараж"
-        serviceHistoryViewController.title = "История обслуживания"
+        serviceHistoryViewController.title = "Сервис"
         
         let garageNavigationController = UINavigationController(rootViewController: garageViewController)
         let serviceHistoryNavigationController = UINavigationController(rootViewController: serviceHistoryViewController)
         
         garageNavigationController.tabBarItem = UITabBarItem(title: "Гараж", image: UIImage(systemName: "bicycle"), selectedImage: nil)
-        serviceHistoryNavigationController.tabBarItem = UITabBarItem(title: "История", image: UIImage(systemName: "wrench.and.screwdriver"), selectedImage: nil)
+        serviceHistoryNavigationController.tabBarItem = UITabBarItem(title: "Сервис", image: UIImage(systemName: "wrench.and.screwdriver"), selectedImage: nil)
         
+        setupNavigationBar(for: garageNavigationController)
+        setupNavigationBar(for: serviceHistoryNavigationController)
         viewControllers = [garageNavigationController, serviceHistoryNavigationController]
     }
     
@@ -60,5 +62,20 @@ final class MainTabBarController: UITabBarController {
         
         tabBar.tintColor = .bcAccent
         tabBar.unselectedItemTintColor = .bcTextSecondary
+    }
+    
+    private func setupNavigationBar(for navigationController: UINavigationController) {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .bcBackground
+        appearance.shadowColor = .clear
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.bcTextMain]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.bcTextMain]
+        
+        let navigationBar = navigationController.navigationBar
+        navigationBar.standardAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
+        navigationBar.tintColor = .bcAccent
+        navigationBar.prefersLargeTitles = true
     }
 }
