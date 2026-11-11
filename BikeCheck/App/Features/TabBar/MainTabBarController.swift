@@ -11,10 +11,15 @@ final class MainTabBarController: UITabBarController {
     
     // MARK: - Private Properties
     private let client: NetworkClient
+    private let selectedBikeStorage: SelectedBikeStorageProtocol
+    
+    //MARK: - Callbacks
+    var onLogout: (() -> Void)?
     
     // MARK: - Initializers
-    init(client: NetworkClient) {
+    init(client: NetworkClient, selectedBikeStorage: SelectedBikeStorageProtocol) {
         self.client = client
+        self.selectedBikeStorage = selectedBikeStorage
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -31,14 +36,17 @@ final class MainTabBarController: UITabBarController {
     
     // MARK: - Private Methods
     private func setupMainTabBar() {
-        let storage = UserDefaultsSelectedBikeStorage()
-        let viewModel = GarageViewModel(client: client, selectedBikeStorage: storage)
+        let viewModel = GarageViewModel(client: client, selectedBikeStorage: selectedBikeStorage)
         let garageViewController = GarageViewController(viewModel: viewModel)
         let serviceHistoryViewController = UIViewController()
         
         serviceHistoryViewController.view.backgroundColor = .bcBackground
         
         garageViewController.title = "Гараж"
+        garageViewController.onLogoutTapped = { [weak self] in
+            self?.onLogout?()
+        }
+        
         serviceHistoryViewController.title = "Сервис"
         
         let garageNavigationController = UINavigationController(rootViewController: garageViewController)

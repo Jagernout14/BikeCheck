@@ -16,6 +16,9 @@ final class GarageViewController: UIViewController {
     private let garageView = GarageView()
     private let viewModel: GarageViewModel
     
+    //MARK: - Callbacks
+    var onLogoutTapped: (() -> Void)?
+    
     // MARK: - Initializers
     init(viewModel: GarageViewModel) {
         self.viewModel = viewModel
@@ -39,7 +42,7 @@ final class GarageViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func tapLogout() {
-        print("Logout tapped")
+        onLogoutTapped?()
     }
     
     @objc private func tapAdd() {
