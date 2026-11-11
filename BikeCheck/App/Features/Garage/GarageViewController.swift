@@ -9,9 +9,6 @@ import UIKit
 
 final class GarageViewController: UIViewController {
     
-    //MARK: - Mock bikes
-    private let bikes = ["Commencal Meta TR", "Santa Cruz V10", "Canyon Spectral", "YT Capra"]
-    
     // MARK: - Private Properties
     private let garageView = GarageView()
     private let viewModel: GarageViewModel
@@ -38,6 +35,8 @@ final class GarageViewController: UIViewController {
         super.viewDidLoad()
         setupTableView()
         setupNavigationBar()
+        bind()
+        viewModel.load()
     }
     
     // MARK: - Actions
@@ -53,7 +52,6 @@ final class GarageViewController: UIViewController {
     private func setupTableView() {
         garageView.tableView.dataSource = self
         garageView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "BikeCell")
-        garageView.configureCard(title: bikes[0], subtitle: "Enduro 15.4 кг")
     }
     
     private func setupNavigationBar() {
@@ -71,19 +69,49 @@ final class GarageViewController: UIViewController {
             action: #selector(tapAdd)
         )
     }
+    
+    private func bind() {
+        viewModel.onLoading = { isLoading in
+            print("loading:", isLoading)
+        }
+        
+        viewModel.onUpdate = { [weak self] in
+            guard let self else { return }
+            self.garageView.tableView.reloadData()
+            if let bike = self.viewModel.selectedBike {
+                self.garageView.configureCard(title: bike.name, subtitle: formatWeight(bike.totalWeightG))
+            }
+        }
+        
+        viewModel.onError = { [weak self] message in
+            let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+            let action = UIAlertAction(title: "ОК", style: .cancel)
+            alert.addAction(action)
+            self?.present(alert, animated: true)
+        }
+    }
+    
+    private func formatWeight(_ grams: Int?) -> String {
+        guard let grams, grams > 0 else { return "" }
+        return String(format: "%.1f кг", Double(grams) / 1000)
+    }
 }
 
 //MARK: - TableViewDataSource
 extension GarageViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        bikes.count
+        viewModel.bikes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BikeCell", for: indexPath)
         var content = cell.defaultContentConfiguration()
-        content.text = bikes[indexPath.row]
+        
+        let bike = viewModel.bikes[indexPath.row]
+        content.text = bike.name
+        content.secondaryText = formatWeight(bike.totalWeightG)
         content.textProperties.color = .bcTextMain
+        content.secondaryTextProperties.color = .bcTextSecondary
         cell.contentConfiguration = content
         cell.backgroundColor = .bcCard
         return cell
