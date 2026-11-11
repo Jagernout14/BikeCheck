@@ -20,8 +20,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         let tokenStorage: TokenStorageProtocol = KeychainTokenStorage()
+        let selectedBikeStorage: SelectedBikeStorageProtocol = UserDefaultsSelectedBikeStorage()
         let client = NetworkClient(storage: tokenStorage, decoder: BikeCheckCoding.decoder)
-        let router = AppRouter(window: window, tokenStorage: tokenStorage, client: client)
+        let router = AppRouter(window: window, tokenStorage: tokenStorage, client: client, selectedBikeStorage: selectedBikeStorage)
         self.window = window
         self.router = router
         router.start()

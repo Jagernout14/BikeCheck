@@ -9,16 +9,21 @@ import UIKit
 
 final class AppRouter {
     
+    // MARK: - Private Properties
     private let window: UIWindow
     private let tokenStorage: TokenStorageProtocol
+    private let selectedBikeStorage: SelectedBikeStorageProtocol
     private let client: NetworkClient
     
-    init(window: UIWindow, tokenStorage: TokenStorageProtocol, client: NetworkClient) {
+    // MARK: - Initializers
+    init(window: UIWindow, tokenStorage: TokenStorageProtocol, client: NetworkClient, selectedBikeStorage: SelectedBikeStorageProtocol) {
         self.window = window
         self.tokenStorage = tokenStorage
+        self.selectedBikeStorage = selectedBikeStorage
         self.client = client
     }
     
+    // MARK: - Public Methods
     func start() {
         if tokenStorage.token != nil {
             showMain()
@@ -27,6 +32,7 @@ final class AppRouter {
         }
     }
     
+    // MARK: - Private Methods
     private func showLogin() {
         let viewModel = LoginViewModel(client: client, tokenStorage: tokenStorage)
         let viewController = LoginViewController(viewModel: viewModel)
@@ -37,7 +43,17 @@ final class AppRouter {
     }
     
     private func showMain() {
-        let tabBar = MainTabBarController()
+        let tabBar = MainTabBarController(client: client, selectedBikeStorage: selectedBikeStorage)
+        tabBar.onLogout = { [weak self] in
+            guard let self else { return }
+            do {
+                try self.tokenStorage.clear()
+            } catch {
+                print(error.localizedDescription)
+            }
+            self.selectedBikeStorage.clear()
+            self.showLogin()
+        }
         setRoot(tabBar)
     }
     
@@ -45,5 +61,4 @@ final class AppRouter {
         window.rootViewController = viewController
         //TODO: - не забыть добавить анимацию
     }
-    
 }
