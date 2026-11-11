@@ -53,6 +53,7 @@ final class GarageViewController: UIViewController {
         garageView.tableView.dataSource = self
         garageView.tableView.delegate = self
         garageView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "BikeCell")
+        garageView.tableView.register(UITableViewHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: "BikeHeader")
     }
     
     private func setupNavigationBar() {
@@ -125,10 +126,6 @@ extension GarageViewController: UITableViewDataSource {
         cell.backgroundColor = isSelected ? .bcSelected : .bcCard
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        "Мои велосипеды"
-    }
 }
 
 //MARK: - TableViewDelegate
@@ -137,5 +134,18 @@ extension GarageViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         viewModel.selectBike(at: indexPath.row)
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "BikeHeader") else {
+            return nil
+        }
+        
+        var content = header.defaultContentConfiguration()
+        content.text = "Мои велосипеды".uppercased()
+        content.textProperties.font = .systemFont(ofSize: 13, weight: .semibold)
+        content.textProperties.color = .bcTextSecondary
+        header.contentConfiguration = content
+        return header
     }
 }

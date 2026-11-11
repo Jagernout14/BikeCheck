@@ -57,7 +57,7 @@ final class GarageView: UIView {
         
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            tableView.topAnchor.constraint(equalTo: bikeCard.bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: bikeCard.bottomAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
