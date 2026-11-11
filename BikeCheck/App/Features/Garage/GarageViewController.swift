@@ -78,9 +78,15 @@ final class GarageViewController: UIViewController {
         
         viewModel.onUpdate = { [weak self] in
             guard let self else { return }
-            self.garageView.tableView.reloadData()
-            if let bike = self.viewModel.selectedBike {
-                self.garageView.configureCard(title: bike.name, subtitle: formatWeight(bike.totalWeightG))
+            
+            UIView.transition(with: garageView.tableView, duration: 0.25, options: .transitionCrossDissolve) {
+                self.garageView.tableView.reloadData()
+            }
+            
+            if let bike = viewModel.selectedBike {
+                UIView.transition(with: garageView, duration: 0.25, options: .transitionCrossDissolve) {
+                    self.garageView.configureCard(title: bike.name, subtitle: self.formatWeight(bike.totalWeightG))
+                }
             }
         }
         
@@ -110,12 +116,13 @@ extension GarageViewController: UITableViewDataSource {
         var content = cell.defaultContentConfiguration()
         
         let bike = viewModel.bikes[indexPath.row]
+        let isSelected = bike.id == viewModel.selectedBike?.id
         content.text = bike.name
         content.secondaryText = formatWeight(bike.totalWeightG)
         content.textProperties.color = .bcTextMain
         content.secondaryTextProperties.color = .bcTextSecondary
         cell.contentConfiguration = content
-        cell.backgroundColor = .bcCard
+        cell.backgroundColor = isSelected ? .bcSelected : .bcCard
         return cell
     }
     
