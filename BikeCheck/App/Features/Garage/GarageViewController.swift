@@ -51,6 +51,7 @@ final class GarageViewController: UIViewController {
     //MARK: - Private Methods
     private func setupTableView() {
         garageView.tableView.dataSource = self
+        garageView.tableView.delegate = self
         garageView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "BikeCell")
     }
     
@@ -99,6 +100,7 @@ final class GarageViewController: UIViewController {
 
 //MARK: - TableViewDataSource
 extension GarageViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.bikes.count
     }
@@ -119,5 +121,14 @@ extension GarageViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         "Мои велосипеды"
+    }
+}
+
+//MARK: - TableViewDelegate
+extension GarageViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        viewModel.selectBike(at: indexPath.row)
     }
 }

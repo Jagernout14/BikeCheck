@@ -50,6 +50,15 @@ final class GarageViewModel {
         }
     }
     
+    func selectBike(at index: Int) {
+        guard bikes.indices.contains(index) else { return }
+        let bike = bikes[index]
+        guard bike.id != selectedBikeId else { return }
+        selectedBikeId = bike.id
+        selectedBikeStorage.save(bike.id)
+        onUpdate?()
+    }
+    
     // MARK: - Private Methods
     private func resolveSelectedBike() {
         guard !bikes.isEmpty else {
