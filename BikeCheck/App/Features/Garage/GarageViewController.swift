@@ -15,6 +15,7 @@ final class GarageViewController: UIViewController {
     
     //MARK: - Callbacks
     var onLogoutTapped: (() -> Void)?
+    var onBikeDetailTapped: ((Int) -> Void)?
     
     // MARK: - Initializers
     init(viewModel: GarageViewModel) {
@@ -45,8 +46,7 @@ final class GarageViewController: UIViewController {
     }
     
     @objc private func tapAdd() {
-        let detailViewController = BikeDetailViewController()
-        navigationController?.pushViewController(detailViewController, animated: true)
+        
     }
     
     //MARK: - Private Methods
@@ -97,6 +97,11 @@ final class GarageViewController: UIViewController {
             let action = UIAlertAction(title: "ОК", style: .cancel)
             alert.addAction(action)
             self?.present(alert, animated: true)
+        }
+        
+        garageView.onCardTapped = { [weak self] in
+            guard let self, let bikeId = viewModel.selectedBike?.id else { return }
+            onBikeDetailTapped?(bikeId)
         }
     }
     

@@ -52,6 +52,13 @@ final class MainTabBarController: UITabBarController {
         let garageNavigationController = UINavigationController(rootViewController: garageViewController)
         let serviceHistoryNavigationController = UINavigationController(rootViewController: serviceHistoryViewController)
         
+        garageViewController.onBikeDetailTapped = { [weak self, weak garageNavigationController] bikeId in
+            guard let self, let garageNavigationController else { return }
+            let viewModel = BikeDetailViewModel(client: client, bikeId: bikeId)
+            let viewController = BikeDetailViewController(viewModel: viewModel)
+            garageNavigationController.pushViewController(viewController, animated: true)
+        }
+        
         garageNavigationController.tabBarItem = UITabBarItem(title: "Гараж", image: UIImage(systemName: "bicycle"), selectedImage: nil)
         serviceHistoryNavigationController.tabBarItem = UITabBarItem(title: "Сервис", image: UIImage(systemName: "wrench.and.screwdriver"), selectedImage: nil)
         

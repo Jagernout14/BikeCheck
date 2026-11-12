@@ -20,6 +20,9 @@ final class BikeCardView: UIView {
     private let subtitleLabel = UILabel()
     private let chevronImageView = UIImageView()
     
+    //MARK: - Callbacks
+    var onBikeCardTapped: (() -> Void)?
+    
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,6 +31,11 @@ final class BikeCardView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Actions
+    @objc private func cardTapped() {
+        onBikeCardTapped?()
     }
     
     // MARK: - Public Methods
@@ -44,6 +52,7 @@ final class BikeCardView: UIView {
         setupBottomBar()
         setupViewsHierarchy()
         setupConstraints()
+        setupGesture()
     }
     
     private func setupView() {
@@ -134,5 +143,10 @@ final class BikeCardView: UIView {
             photoImageView.bottomAnchor.constraint(equalTo: bottomBar.topAnchor),
             textStack.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -8)
         ])
+    }
+    
+    private func setupGesture() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(cardTapped))
+        addGestureRecognizer(tap)
     }
 }

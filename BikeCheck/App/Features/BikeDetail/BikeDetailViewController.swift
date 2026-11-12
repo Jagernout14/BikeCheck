@@ -11,25 +11,17 @@ final class BikeDetailViewController: UIViewController {
     
     // MARK: - Private Properties
     private let bikeDetailView = BikeDetailView()
-    //private let viewModel: BikeDetailViewModel
-    
-    //MARK: - Mock Data
-    // Карточка статистики
-    private let mockBikeName = "Commencal Supreme DH"
-    private let mockWeight = "17.8 кг"
-    private let mockMileage = "1 240 км"
-    
-    // Компоненты
-    private let mockComponents: [(name: String, detail: String)] = [
-        ("Рама", "Commencal Supreme DH V5 · 4.9 кг"),
-        ("Вилка", "Fox 40 Factory · 2.8 кг"),
-        ("Амортизатор", "Fox DHX2 · 0.9 кг"),
-        ("Колёса", "DT Swiss FR1500 · 2.3 кг"),
-        ("Трансмиссия", "Shimano Saint M820 · 1.1 кг"),
-        ("Рулевая", "Chris King DropSet · 0.1 кг")
-    ]
+    private let viewModel: BikeDetailViewModel
     
     // MARK: - Initializers
+    init(viewModel: BikeDetailViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     //MARK: - Override Methods
     override func loadView() {
@@ -39,12 +31,10 @@ final class BikeDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
-        title = mockBikeName
         navigationItem.largeTitleDisplayMode = .never
-        bikeDetailView.configureStats(mileage: mockMileage, weight: mockWeight)
+        bind()
+        viewModel.load()
     }
-    
-    // MARK: - Public Methods
     
     // MARK: - Private Methods
     private func setupTableView() {
@@ -53,21 +43,47 @@ final class BikeDetailViewController: UIViewController {
         bikeDetailView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         bikeDetailView.tableView.register(UITableViewHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: "BikeDetailHeader")
     }
+    
+    private func bind() {
+        viewModel.onError = { [weak self] message in
+            let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+            let action = UIAlertAction(title: "ОК", style: .cancel)
+            alert.addAction(action)
+            self?.present(alert, animated: true)
+        }
+        
+        viewModel.onLoading = { isLoading in
+            print("loading:", isLoading)
+        }
+        
+        viewModel.onUpdate = { [weak self] in
+            guard let self else { return }
+            guard let bike = viewModel.bike else { return }
+            title = bike.name
+            bikeDetailView.configureStats(mileage: "-", weight: formatWeight(bike.totalWeightG))
+            bikeDetailView.tableView.reloadData()
+        }
+    }
+    
+    private func formatWeight(_ grams: Int?) -> String {
+        guard let grams, grams > 0 else { return "" }
+        return String(format: "%.1f кг", Double(grams) / 1000)
+    }
 }
 
 //MARK: - TableViewDataSource
 extension BikeDetailViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        mockComponents.count
+        viewModel.components.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         var content = cell.defaultContentConfiguration()
-        let component = mockComponents[indexPath.row]
-        content.text = component.name
-        content.secondaryText = component.detail
+        let component = viewModel.components[indexPath.row]
+        content.text = component.catalog.category
+        content.secondaryText = component.catalog.name
         content.textProperties.color = .bcTextMain
         content.secondaryTextProperties.color = .bcTextSecondary
         cell.contentConfiguration = content
@@ -77,6 +93,7 @@ extension BikeDetailViewController: UITableViewDataSource {
     }
 }
 
+//MARK: - TableViewDelegate
 extension BikeDetailViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
