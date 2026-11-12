@@ -50,7 +50,6 @@ final class GarageView: UIView {
     }
     
     private func setupTableView() {
-        tableView.rowHeight = 64
         tableView.backgroundColor = .clear
         tableView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(tableView)

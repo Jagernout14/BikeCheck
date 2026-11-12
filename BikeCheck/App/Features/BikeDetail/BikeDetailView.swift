@@ -49,7 +49,6 @@ final class BikeDetailView: UIView {
     
     private func setupTableView() {
         tableView.backgroundColor = .clear
-        tableView.rowHeight = 68
         tableView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(tableView)
     }
