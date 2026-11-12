@@ -45,7 +45,8 @@ final class GarageViewController: UIViewController {
     }
     
     @objc private func tapAdd() {
-        print("Add button tapped")
+        let detailViewController = BikeDetailViewController()
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
     
     //MARK: - Private Methods
