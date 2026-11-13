@@ -87,7 +87,7 @@ final class GarageViewController: UIViewController {
             
             if let bike = viewModel.selectedBike {
                 UIView.transition(with: garageView, duration: 0.25, options: .transitionCrossDissolve) {
-                    self.garageView.configureCard(title: bike.name, subtitle: self.formatWeight(bike.totalWeightG))
+                    self.garageView.configureCard(title: bike.name, subtitle: bike.totalWeightG.kilosText)
                 }
             }
         }
@@ -103,11 +103,6 @@ final class GarageViewController: UIViewController {
             guard let self, let bikeId = viewModel.selectedBike?.id else { return }
             onBikeDetailTapped?(bikeId)
         }
-    }
-    
-    private func formatWeight(_ grams: Int?) -> String {
-        guard let grams, grams > 0 else { return "" }
-        return String(format: "%.1f кг", Double(grams) / 1000)
     }
 }
 
@@ -125,7 +120,7 @@ extension GarageViewController: UITableViewDataSource {
         let bike = viewModel.bikes[indexPath.row]
         let isSelected = bike.id == viewModel.selectedBike?.id
         content.text = bike.name
-        content.secondaryText = formatWeight(bike.totalWeightG)
+        content.secondaryText = bike.totalWeightG.kilosText
         content.textProperties.color = .bcTextMain
         content.secondaryTextProperties.color = .bcTextSecondary
         cell.contentConfiguration = content

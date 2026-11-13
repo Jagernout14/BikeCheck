@@ -60,19 +60,9 @@ final class BikeDetailViewController: UIViewController {
             guard let self else { return }
             guard let bike = viewModel.bike else { return }
             title = bike.name
-            bikeDetailView.configureStats(mileage: "-", weight: formatWeightKilos(bike.totalWeightG))
+            bikeDetailView.configureStats(mileage: "-", weight: bike.totalWeightG.kilosText)
             bikeDetailView.tableView.reloadData()
         }
-    }
-    
-    private func formatWeightKilos(_ grams: Int?) -> String {
-        guard let grams, grams > 0 else { return "" }
-        return String(format: "%.1f кг", Double(grams) / 1000)
-    }
-    
-    private func formatWeightGrams(_ grams: Int?) -> String {
-        guard let grams, grams > 0 else { return "" }
-        return "\(grams) г"
     }
 }
 
@@ -89,7 +79,7 @@ extension BikeDetailViewController: UITableViewDataSource {
         }
         
         let component = viewModel.components[indexPath.row]
-        cell.configure(title: component.catalog.name, subtitle: component.catalog.category, weight: formatWeightGrams(component.catalog.weightG))
+        cell.configure(title: component.catalog.name, subtitle: component.catalog.category, weight: component.catalog.weightG?.gramsText ?? "")
         
         return cell
     }
