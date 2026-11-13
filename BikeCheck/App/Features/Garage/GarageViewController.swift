@@ -15,6 +15,7 @@ final class GarageViewController: UIViewController {
     
     //MARK: - Callbacks
     var onLogoutTapped: (() -> Void)?
+    var onBikeDetailTapped: ((Int) -> Void)?
     
     // MARK: - Initializers
     init(viewModel: GarageViewModel) {
@@ -45,7 +46,7 @@ final class GarageViewController: UIViewController {
     }
     
     @objc private func tapAdd() {
-        print("Add button tapped")
+        
     }
     
     //MARK: - Private Methods
@@ -86,7 +87,7 @@ final class GarageViewController: UIViewController {
             
             if let bike = viewModel.selectedBike {
                 UIView.transition(with: garageView, duration: 0.25, options: .transitionCrossDissolve) {
-                    self.garageView.configureCard(title: bike.name, subtitle: self.formatWeight(bike.totalWeightG))
+                    self.garageView.configureCard(title: bike.name, subtitle: bike.totalWeightG.kilosText)
                 }
             }
         }
@@ -97,11 +98,11 @@ final class GarageViewController: UIViewController {
             alert.addAction(action)
             self?.present(alert, animated: true)
         }
-    }
-    
-    private func formatWeight(_ grams: Int?) -> String {
-        guard let grams, grams > 0 else { return "" }
-        return String(format: "%.1f кг", Double(grams) / 1000)
+        
+        garageView.onCardTapped = { [weak self] in
+            guard let self, let bikeId = viewModel.selectedBike?.id else { return }
+            onBikeDetailTapped?(bikeId)
+        }
     }
 }
 
@@ -119,7 +120,7 @@ extension GarageViewController: UITableViewDataSource {
         let bike = viewModel.bikes[indexPath.row]
         let isSelected = bike.id == viewModel.selectedBike?.id
         content.text = bike.name
-        content.secondaryText = formatWeight(bike.totalWeightG)
+        content.secondaryText = bike.totalWeightG.kilosText
         content.textProperties.color = .bcTextMain
         content.secondaryTextProperties.color = .bcTextSecondary
         cell.contentConfiguration = content

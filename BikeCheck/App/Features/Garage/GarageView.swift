@@ -15,6 +15,9 @@ final class GarageView: UIView {
     // MARK: - Private Properties
     private let bikeCard = BikeCardView()
     
+    //MARK: - Callbacks
+    var onCardTapped: (() -> Void)?
+    
     // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,6 +41,10 @@ final class GarageView: UIView {
     }
     
     private func setupBikeCard() {
+        bikeCard.onBikeCardTapped = { [weak self] in
+            self?.onCardTapped?()
+        }
+        
         bikeCard.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(bikeCard)
         
@@ -50,7 +57,6 @@ final class GarageView: UIView {
     }
     
     private func setupTableView() {
-        tableView.rowHeight = 64
         tableView.backgroundColor = .clear
         tableView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(tableView)
