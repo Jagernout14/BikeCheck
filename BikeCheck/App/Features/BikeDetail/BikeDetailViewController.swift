@@ -100,4 +100,8 @@ extension BikeDetailViewController: UITableViewDelegate {
         header.contentConfiguration = content
         return header
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
