@@ -79,7 +79,7 @@ extension BikeDetailViewController: UITableViewDataSource {
         }
         
         let component = viewModel.components[indexPath.row]
-        cell.configure(title: component.catalog.name, subtitle: component.catalog.category, weight: component.catalog.weightG?.gramsText ?? "")
+        cell.configure(title: component.catalog.name, subtitle: ComponentCategory.title(for: component.catalog.category), weight: component.catalog.weightG?.gramsText ?? "")
         
         return cell
     }
