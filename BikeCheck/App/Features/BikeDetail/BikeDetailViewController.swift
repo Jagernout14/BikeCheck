@@ -40,7 +40,7 @@ final class BikeDetailViewController: UIViewController {
     private func setupTableView() {
         bikeDetailView.tableView.dataSource = self
         bikeDetailView.tableView.delegate = self
-        bikeDetailView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        bikeDetailView.tableView.register(PartCell.self, forCellReuseIdentifier: PartCell.identifier)
         bikeDetailView.tableView.register(UITableViewHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: "BikeDetailHeader")
     }
     
@@ -60,14 +60,19 @@ final class BikeDetailViewController: UIViewController {
             guard let self else { return }
             guard let bike = viewModel.bike else { return }
             title = bike.name
-            bikeDetailView.configureStats(mileage: "-", weight: formatWeight(bike.totalWeightG))
+            bikeDetailView.configureStats(mileage: "-", weight: formatWeightKilos(bike.totalWeightG))
             bikeDetailView.tableView.reloadData()
         }
     }
     
-    private func formatWeight(_ grams: Int?) -> String {
+    private func formatWeightKilos(_ grams: Int?) -> String {
         guard let grams, grams > 0 else { return "" }
         return String(format: "%.1f кг", Double(grams) / 1000)
+    }
+    
+    private func formatWeightGrams(_ grams: Int?) -> String {
+        guard let grams, grams > 0 else { return "" }
+        return "\(grams) г"
     }
 }
 
@@ -79,15 +84,12 @@ extension BikeDetailViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        var content = cell.defaultContentConfiguration()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PartCell.identifier, for: indexPath) as? PartCell else {
+            return UITableViewCell()
+        }
+        
         let component = viewModel.components[indexPath.row]
-        content.text = component.catalog.category
-        content.secondaryText = component.catalog.name
-        content.textProperties.color = .bcTextMain
-        content.secondaryTextProperties.color = .bcTextSecondary
-        cell.contentConfiguration = content
-        cell.backgroundColor = .bcCard
+        cell.configure(title: component.catalog.name, subtitle: component.catalog.category, weight: formatWeightGrams(component.catalog.weightG))
         
         return cell
     }
