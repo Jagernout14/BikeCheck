@@ -30,11 +30,20 @@ final class BikeDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
         setupTableView()
-        navigationItem.largeTitleDisplayMode = .never
         bind()
         viewModel.load()
     }
+    
+    // MARK: - Actions
+    @objc private func tapAddButton() {
+        //TODO: - Проверочный метод. Когда вм готов будет - переделать этот метод
+        let viewController = CatalogViewController()
+        let navigationController = UINavigationController(rootViewController: viewController)
+        present(navigationController, animated: true)
+    }
+    
     
     // MARK: - Private Methods
     private func setupTableView() {
@@ -63,6 +72,16 @@ final class BikeDetailViewController: UIViewController {
             bikeDetailView.configureStats(mileage: "-", weight: bike.totalWeightG.kilosText)
             bikeDetailView.tableView.reloadData()
         }
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.largeTitleDisplayMode = .never
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "plus"),
+            style: .plain,
+            target: self,
+            action: #selector(tapAddButton)
+        )
     }
 }
 

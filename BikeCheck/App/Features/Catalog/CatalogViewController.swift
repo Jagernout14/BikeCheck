@@ -106,5 +106,11 @@ extension CatalogViewController: UICollectionViewDataSource {
 
 //MARK: - CollectionViewDelegate
 extension CatalogViewController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        if collectionView.indexPathsForSelectedItems?.contains(indexPath) ?? false {
+            collectionView.deselectItem(at: indexPath, animated: true)
+            return false
+        }
+        return true
+    }
 }
