@@ -5,8 +5,6 @@
 //  Created by Роман Пичугин on 12.11.2026.
 //
 
-import Foundation
-
 final class BikeDetailViewModel {
     
     // MARK: - Public Properties
