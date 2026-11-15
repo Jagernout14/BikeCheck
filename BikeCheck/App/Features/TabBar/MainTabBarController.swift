@@ -56,6 +56,16 @@ final class MainTabBarController: UITabBarController {
             guard let self, let garageNavigationController else { return }
             let viewModel = BikeDetailViewModel(client: client, bikeId: bikeId)
             let viewController = BikeDetailViewController(viewModel: viewModel)
+            
+            viewController.onAddTapped = { [weak self, weak viewController] in
+                guard let self, let viewController else { return }
+                let catalogViewModel = CatalogViewModel(client: client)
+                let catalogViewController = CatalogViewController(viewModel: catalogViewModel)
+                let catalogNavigationController = UINavigationController(rootViewController: catalogViewController)
+                setupNavigationBar(for: catalogNavigationController)
+                viewController.present(catalogNavigationController, animated: true)
+            }
+            
             garageNavigationController.pushViewController(viewController, animated: true)
         }
         

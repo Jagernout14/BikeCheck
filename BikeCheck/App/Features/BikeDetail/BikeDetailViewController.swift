@@ -13,6 +13,9 @@ final class BikeDetailViewController: UIViewController {
     private let bikeDetailView = BikeDetailView()
     private let viewModel: BikeDetailViewModel
     
+    //MARK: - Callbacks
+    var onAddTapped: (() -> Void)?
+    
     // MARK: - Initializers
     init(viewModel: BikeDetailViewModel) {
         self.viewModel = viewModel
@@ -38,10 +41,7 @@ final class BikeDetailViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func tapAddButton() {
-        //TODO: - Проверочный метод. Когда вм готов будет - переделать этот метод
-        let viewController = CatalogViewController()
-        let navigationController = UINavigationController(rootViewController: viewController)
-        present(navigationController, animated: true)
+        onAddTapped?()
     }
     
     
