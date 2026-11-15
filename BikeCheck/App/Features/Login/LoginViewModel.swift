@@ -5,9 +5,6 @@
 //  Created by Роман Пичугин on 06.11.2026.
 //
 
-import Foundation
-
-@MainActor
 final class LoginViewModel {
     
     // MARK: - Public Properties

@@ -7,7 +7,7 @@
 
 import Foundation
 
-nonisolated enum ComponentCategory: String {
+nonisolated enum ComponentCategory: String, CaseIterable {
     case frame
     case fork
     case rims

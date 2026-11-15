@@ -5,8 +5,6 @@
 //  Created by Роман Пичугин on 08.11.2026.
 //
 
-import Foundation
-
 final class GarageViewModel {
     
     // MARK: - Public Properties

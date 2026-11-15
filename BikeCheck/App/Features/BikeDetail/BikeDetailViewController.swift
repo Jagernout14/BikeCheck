@@ -13,6 +13,9 @@ final class BikeDetailViewController: UIViewController {
     private let bikeDetailView = BikeDetailView()
     private let viewModel: BikeDetailViewModel
     
+    //MARK: - Callbacks
+    var onAddTapped: (() -> Void)?
+    
     // MARK: - Initializers
     init(viewModel: BikeDetailViewModel) {
         self.viewModel = viewModel
@@ -30,11 +33,17 @@ final class BikeDetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
         setupTableView()
-        navigationItem.largeTitleDisplayMode = .never
         bind()
         viewModel.load()
     }
+    
+    // MARK: - Actions
+    @objc private func tapAddButton() {
+        onAddTapped?()
+    }
+    
     
     // MARK: - Private Methods
     private func setupTableView() {
@@ -63,6 +72,16 @@ final class BikeDetailViewController: UIViewController {
             bikeDetailView.configureStats(mileage: "-", weight: bike.totalWeightG.kilosText)
             bikeDetailView.tableView.reloadData()
         }
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.largeTitleDisplayMode = .never
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "plus"),
+            style: .plain,
+            target: self,
+            action: #selector(tapAddButton)
+        )
     }
 }
 
