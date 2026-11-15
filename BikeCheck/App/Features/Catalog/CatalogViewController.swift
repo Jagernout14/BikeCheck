@@ -14,6 +14,9 @@ final class CatalogViewController: UIViewController {
     private let viewModel: CatalogViewModel
     private let categories = ComponentCategory.allCases
     
+    //MARK: - Callbacks
+    var onInstalledComponent: (() -> Void)?
+    
     // MARK: - Initializers
     init(viewModel: CatalogViewModel) {
         self.viewModel = viewModel
@@ -82,6 +85,10 @@ final class CatalogViewController: UIViewController {
         catalogView.onSearch = { [weak self] text in
             self?.viewModel.search(text)
         }
+        
+        viewModel.onComponentInstalled = { [weak self] in
+            self?.onInstalledComponent?()
+        }
     }
 }
 
@@ -107,6 +114,12 @@ extension CatalogViewController: UITableViewDelegate {
         if indexPath.row == viewModel.catalogItems.count - 1 {
             viewModel.load()
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let item = viewModel.catalogItems[indexPath.row]
+        viewModel.installComponent(catalogId: item.id)
     }
 }
 

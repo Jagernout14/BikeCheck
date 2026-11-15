@@ -5,6 +5,8 @@
 //  Created by Роман Пичугин on 15.11.2026.
 //
 
+import Foundation
+
 final class CatalogViewModel {
     
     // MARK: - Public Properties
@@ -15,18 +17,22 @@ final class CatalogViewModel {
     // MARK: - Private Properties
     private let client: NetworkClient
     private var isLoading = false
+    private var isInstalling = false
     private let limit = 20
     private var total = 0
     private var loadTask: Task<Void, Never>?
+    private let bikeId: Int
     
     //MARK: - Callbacks
     var onError: ((String) -> Void)?
     var onUpdate: (() -> Void)?
     var onLoading: ((Bool) -> Void)?
+    var onComponentInstalled: (() -> Void)?
     
     // MARK: - Initializers
-    init(client: NetworkClient) {
+    init(client: NetworkClient, bikeId: Int) {
         self.client = client
+        self.bikeId = bikeId
     }
     
     // MARK: - Public Methods
@@ -57,6 +63,26 @@ final class CatalogViewModel {
             } catch {
                 guard !Task.isCancelled else { return }
                 onError?((error as? NetworkError)?.userMessage ?? "Что-то пошло не так")
+            }
+        }
+    }
+    
+    func installComponent(catalogId: Int) {
+        guard !isInstalling else { return }
+        onLoading?(true)
+        isInstalling = true
+        Task { [weak self] in
+            guard let self else { return }
+            defer {
+                onLoading?(false)
+                isInstalling = false
+            }
+            do {
+                let newComponent = NewComponent(catalogId: catalogId, installedAt: DateFormatter.apiDate.string(from: Date()), note: nil)
+                let _: Component = try await client.request(BikeEndpoint.installComponent(id: bikeId, newComponent))
+                onComponentInstalled?()
+            } catch {
+                onError?((error as? NetworkError)?.userMessage ?? "Что-то пошло не по плану")
             }
         }
     }
