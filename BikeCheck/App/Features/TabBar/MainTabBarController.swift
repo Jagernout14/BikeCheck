@@ -36,49 +36,61 @@ final class MainTabBarController: UITabBarController {
     
     // MARK: - Private Methods
     private func setupMainTabBar() {
-        let viewModel = GarageViewModel(client: client, selectedBikeStorage: selectedBikeStorage)
-        let garageViewController = GarageViewController(viewModel: viewModel)
-        let serviceHistoryViewController = UIViewController()
-        
-        serviceHistoryViewController.view.backgroundColor = .bcBackground
-        
+        let garageViewModel = GarageViewModel(client: client, selectedBikeStorage: selectedBikeStorage)
+        let garageViewController = GarageViewController(viewModel: garageViewModel)
+        let garageNavigationController = UINavigationController(rootViewController: garageViewController)
         garageViewController.title = "Гараж"
+        garageNavigationController.tabBarItem = UITabBarItem(
+            title: "Гараж",
+            image: UIImage(systemName: "bicycle"),
+            selectedImage: nil
+        )
+        setupNavigationBar(for: garageNavigationController)
+        
         garageViewController.onLogoutTapped = { [weak self] in
             self?.onLogout?()
         }
         
-        serviceHistoryViewController.title = "Сервис"
-        
-        let garageNavigationController = UINavigationController(rootViewController: garageViewController)
-        let serviceHistoryNavigationController = UINavigationController(rootViewController: serviceHistoryViewController)
-        
         garageViewController.onBikeDetailTapped = { [weak self, weak garageNavigationController] bikeId in
             guard let self, let garageNavigationController else { return }
-            let viewModel = BikeDetailViewModel(client: client, bikeId: bikeId)
-            let viewController = BikeDetailViewController(viewModel: viewModel)
-            
-            viewController.onAddTapped = { [weak self, weak viewController, weak viewModel] in
-                guard let self, let viewController else { return }
-                let catalogViewModel = CatalogViewModel(client: client, bikeId: bikeId)
-                let catalogViewController = CatalogViewController(viewModel: catalogViewModel)
-                let catalogNavigationController = UINavigationController(rootViewController: catalogViewController)
-                catalogViewController.onInstalledComponent = { [weak viewController, weak viewModel] in
-                    viewController?.dismiss(animated: true)
-                    viewModel?.load()
-                }
-                setupNavigationBar(for: catalogNavigationController)
-                viewController.present(catalogNavigationController, animated: true)
-            }
-            
-            garageNavigationController.pushViewController(viewController, animated: true)
+            openBikeDetailScreen(bikeId: bikeId, navigationController: garageNavigationController)
         }
         
-        garageNavigationController.tabBarItem = UITabBarItem(title: "Гараж", image: UIImage(systemName: "bicycle"), selectedImage: nil)
-        serviceHistoryNavigationController.tabBarItem = UITabBarItem(title: "Сервис", image: UIImage(systemName: "wrench.and.screwdriver"), selectedImage: nil)
+        let serviceViewController = MockServiceViewController()
+        let serviceNavigationController = UINavigationController(rootViewController: serviceViewController)
+        serviceViewController.title = "Сервис"
+        serviceNavigationController.tabBarItem = UITabBarItem(
+            title: "Сервис",
+            image: UIImage(systemName: "wrench.and.screwdriver"),
+            selectedImage: nil
+        )
+        setupNavigationBar(for: serviceNavigationController)
         
-        setupNavigationBar(for: garageNavigationController)
-        setupNavigationBar(for: serviceHistoryNavigationController)
-        viewControllers = [garageNavigationController, serviceHistoryNavigationController]
+        viewControllers = [garageNavigationController, serviceNavigationController]
+    }
+    
+    private func openBikeDetailScreen(bikeId: Int, navigationController: UINavigationController) {
+        let bikeViewModel = BikeDetailViewModel(client: client, bikeId: bikeId)
+        let bikeViewController = BikeDetailViewController(viewModel: bikeViewModel)
+        bikeViewController.onAddTapped = { [weak self, weak bikeViewController] in
+            guard let self, let bikeViewController else { return }
+            openCatalogScreen(bikeId: bikeId, source: bikeViewController) {
+                bikeViewModel.load()
+            }
+        }
+        navigationController.pushViewController(bikeViewController, animated: true)
+    }
+    
+    private func openCatalogScreen(bikeId: Int, source: UIViewController, onInstalled: @escaping () -> Void) {
+        let catalogViewModel = CatalogViewModel(client: client, bikeId: bikeId)
+        let catalogViewController = CatalogViewController(viewModel: catalogViewModel)
+        let catalogNavigationController = UINavigationController(rootViewController: catalogViewController)
+        setupNavigationBar(for: catalogNavigationController)
+        catalogViewController.onInstalledComponent = { [weak source] in
+            source?.dismiss(animated: true)
+            onInstalled()
+        }
+        source.present(catalogNavigationController, animated: true)
     }
     
     private func setupAppearance() {
