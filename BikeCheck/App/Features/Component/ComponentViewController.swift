@@ -41,6 +41,7 @@ final class ComponentViewController: UIViewController {
     //MARK: - Private Methods
     private func setupTableView() {
         componentView.tableView.dataSource = self
+        componentView.tableView.delegate = self
         componentView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "infoCell")
         componentView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "serviceCell")
     }
