@@ -40,6 +40,7 @@ final class ComponentViewController: UIViewController {
     
     //MARK: - Private Methods
     private func setupTableView() {
+        navigationItem.largeTitleDisplayMode = .never
         componentView.tableView.dataSource = self
         componentView.tableView.delegate = self
         componentView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "infoCell")
