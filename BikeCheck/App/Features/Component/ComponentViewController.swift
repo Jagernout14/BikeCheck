@@ -54,6 +54,7 @@ final class ComponentViewController: UIViewController {
         }
         
         viewModel.onUpdate = { [weak self] in
+            self?.title = self?.viewModel.screenTitle
             self?.componentView.tableView.reloadData()
         }
         

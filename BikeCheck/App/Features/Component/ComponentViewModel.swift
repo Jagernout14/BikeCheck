@@ -20,6 +20,11 @@ final class ComponentViewModel {
     private(set) var infoRows: [ComponentRow] = []
     private(set) var serviceRows: [ComponentRow] = []
     
+    var screenTitle: String {
+        component?.catalog.name ?? ""
+        
+    }
+    
     //MARK: - Private Properties
     private let client: NetworkClient
     private let componentId: Int
