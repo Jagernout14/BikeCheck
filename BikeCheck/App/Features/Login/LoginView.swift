@@ -24,7 +24,7 @@ final class LoginView: UIView {
     var onLoginTap: (() -> Void)?
     var onRegisterTap: (() -> Void)?
     
-    // MARK: - Overrides Methods
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -101,7 +101,6 @@ final class LoginView: UIView {
         )
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         textField.leftViewMode = .always
-        
     }
     
     private func setupEmailField() {

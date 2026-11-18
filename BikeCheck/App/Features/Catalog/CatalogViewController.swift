@@ -64,6 +64,7 @@ final class CatalogViewController: UIViewController {
             action: #selector(tapCancelButton)
         )
         title = "Каталог"
+        navigationItem.largeTitleDisplayMode = .never
     }
     
     private func bind() {

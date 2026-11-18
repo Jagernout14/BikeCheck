@@ -82,7 +82,6 @@ final class BikeStatsView: UIView {
         mainStackView.addArrangedSubview(weightStackView)
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(mainStackView)
-        
     }
     
     private func setupConstraints() {
