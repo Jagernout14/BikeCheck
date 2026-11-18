@@ -114,3 +114,14 @@ extension ComponentViewController: UITableViewDataSource {
         }
     }
 }
+
+//MARK: - TableViewDelegate
+extension ComponentViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        guard let headerView = view as? UITableViewHeaderFooterView else { return }
+        guard var configuration = headerView.contentConfiguration as? UIListContentConfiguration else { return }
+        configuration.textProperties.color = .bcTextSecondary
+        headerView.contentConfiguration = configuration
+        
+    }
+}
