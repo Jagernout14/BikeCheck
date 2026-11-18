@@ -17,7 +17,6 @@ final class GarageViewModel {
     // MARK: - Private Properties
     private let client: NetworkClient
     private let selectedBikeStorage: SelectedBikeStorageProtocol
-    
     private var selectedBikeId: Int?
     
     //MARK: - Callbacks

@@ -46,7 +46,8 @@ final class GarageViewController: UIViewController {
     }
     
     @objc private func tapAdd() {
-        
+        print("Add button tapped")
+        //TODO: - здесь будет переход на экран добавления велика
     }
     
     //MARK: - Private Methods

@@ -76,6 +76,5 @@ final class LoginViewController: UIViewController {
         let action = UIAlertAction(title: "OK", style: .default)
         alert.addAction(action)
         present(alert, animated: true)
-        
     }
 }

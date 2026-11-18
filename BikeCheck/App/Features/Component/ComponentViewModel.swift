@@ -55,6 +55,7 @@ final class ComponentViewModel {
         }
     }
     
+    //MARK: - Private Methods
     private func makeRows() {
         guard let component else { return }
         infoRows = [

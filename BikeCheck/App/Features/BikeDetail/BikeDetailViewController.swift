@@ -44,7 +44,6 @@ final class BikeDetailViewController: UIViewController {
         onAddTapped?()
     }
     
-    
     // MARK: - Private Methods
     private func setupTableView() {
         bikeDetailView.tableView.dataSource = self
