@@ -86,6 +86,9 @@ extension ComponentViewController: UITableViewDataSource {
             var content = UIListContentConfiguration.valueCell()
             content.text = row.text
             content.secondaryText = row.secondaryText
+            cell.backgroundColor = .bcCard
+            content.textProperties.color = .bcTextMain
+            content.secondaryTextProperties.color = .bcTextSecondary
             cell.contentConfiguration = content
             return cell
         default:
@@ -94,6 +97,9 @@ extension ComponentViewController: UITableViewDataSource {
             var content = UIListContentConfiguration.subtitleCell()
             content.text = row.text
             content.secondaryText = row.secondaryText
+            cell.backgroundColor = .bcCard
+            content.textProperties.color = .bcTextMain
+            content.secondaryTextProperties.color = .bcTextSecondary
             cell.contentConfiguration = content
             return cell
         }

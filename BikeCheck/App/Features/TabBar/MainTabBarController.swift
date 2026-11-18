@@ -78,6 +78,12 @@ final class MainTabBarController: UITabBarController {
                 bikeViewModel.load()
             }
         }
+        
+        bikeViewController.onComponentTapped = { [weak self, weak navigationController] componentId in
+            guard let self, let navigationController else { return }
+            openComponentScreen(componentId: componentId, navigationController: navigationController)
+            
+        }
         navigationController.pushViewController(bikeViewController, animated: true)
     }
     
@@ -91,6 +97,12 @@ final class MainTabBarController: UITabBarController {
             onInstalled()
         }
         source.present(catalogNavigationController, animated: true)
+    }
+    
+    private func openComponentScreen(componentId: Int, navigationController: UINavigationController) {
+        let componentViewModel = ComponentViewModel(client: client, componentId: componentId)
+        let componentViewController = ComponentViewController(viewModel: componentViewModel)
+        navigationController.pushViewController(componentViewController, animated: true)
     }
     
     private func setupAppearance() {

@@ -15,6 +15,7 @@ final class BikeDetailViewController: UIViewController {
     
     //MARK: - Callbacks
     var onAddTapped: (() -> Void)?
+    var onComponentTapped: ((Int) -> Void)?
     
     // MARK: - Initializers
     init(viewModel: BikeDetailViewModel) {
@@ -121,5 +122,7 @@ extension BikeDetailViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let component = viewModel.components[indexPath.row]
+        onComponentTapped?(component.id)
     }
 }
