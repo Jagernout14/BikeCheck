@@ -56,7 +56,7 @@ final class AddBikeView: UIView {
     private func setupTitleLabel() {
         titleLabel.font = .systemFont(ofSize: 13, weight: .semibold)
         titleLabel.textColor = .bcTextSecondary
-        titleLabel.text = "Название"
+        titleLabel.text = "Название".uppercased()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(titleLabel)
         
@@ -73,7 +73,7 @@ final class AddBikeView: UIView {
         nameTextField.font = .systemFont(ofSize: 17)
         nameTextField.textColor = .bcTextMain
         nameTextField.tintColor = .bcAccent
-        nameTextField.attributedPlaceholder = NSAttributedString(string: "Название велосипеда".uppercased(), attributes: [.foregroundColor: UIColor.bcTextSecondary])
+        nameTextField.attributedPlaceholder = NSAttributedString(string: "Название велосипеда", attributes: [.foregroundColor: UIColor.bcTextSecondary])
         nameTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         nameTextField.leftViewMode = .always
         nameTextField.autocapitalizationType = .sentences
