@@ -13,7 +13,11 @@ final class AddBikeView: UIView {
     private let titleLabel = UILabel()
     private let nameTextField = UITextField()
     private let createButton = UIButton(type: .system)
-    private var isCreateButtonEnabled = false
+    
+    //MARK: - Callbacks
+    var onNameChange: ((String) -> Void)?
+    var onCreateTapped: (() -> Void)?
+    
     
     //MARK: - Initializers
     override init(frame: CGRect) {
@@ -27,20 +31,31 @@ final class AddBikeView: UIView {
     
     //MARK: - Actions
     @objc private func tapCreateButton() {
-        //TODO: - засунуть сюда коллбек для соединения
+        onCreateTapped?()
+    }
+    
+    @objc private func nameChanged() {
+        onNameChange?(nameTextField.text ?? "")
+    }
+    
+    //MARK: - Public Methods
+    func setCreateButtonEnabled(isEnabled: Bool) {
+        createButton.isEnabled = isEnabled
+        createButton.alpha = isEnabled ? 1 : 0.5
     }
     
     //MARK: - Private Methods
     private func setupUI() {
-        setupTextLabel()
+        self.backgroundColor = .bcBackground
+        setupTitleLabel()
         setupNameTextField()
         setupCreateButton()
         
     }
     
-    private func setupTextLabel() {
+    private func setupTitleLabel() {
         titleLabel.font = .systemFont(ofSize: 13, weight: .semibold)
-        titleLabel.textColor = .bcTextMain
+        titleLabel.textColor = .bcTextSecondary
         titleLabel.text = "Название"
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(titleLabel)
@@ -53,18 +68,20 @@ final class AddBikeView: UIView {
     
     private func setupNameTextField() {
         nameTextField.backgroundColor = .bcCard
-        nameTextField.layer.cornerRadius = 12
+        nameTextField.layer.cornerRadius = 10
         nameTextField.clipsToBounds = true
         nameTextField.font = .systemFont(ofSize: 17)
         nameTextField.textColor = .bcTextMain
         nameTextField.tintColor = .bcAccent
-        nameTextField.attributedPlaceholder = NSAttributedString(string: "Название велосипеда", attributes: [.foregroundColor: UIColor.bcTextSecondary])
+        nameTextField.attributedPlaceholder = NSAttributedString(string: "Название велосипеда".uppercased(), attributes: [.foregroundColor: UIColor.bcTextSecondary])
         nameTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         nameTextField.leftViewMode = .always
         nameTextField.autocapitalizationType = .sentences
         nameTextField.autocorrectionType = .no
         nameTextField.clearButtonMode = .whileEditing
         nameTextField.returnKeyType = .done
+        nameTextField.addTarget(self, action: #selector(nameChanged), for: .editingChanged)
+        nameTextField.delegate = self
         
         nameTextField.translatesAutoresizingMaskIntoConstraints = false
         addSubview(nameTextField)
@@ -96,10 +113,12 @@ final class AddBikeView: UIView {
             createButton.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor, constant: -8)
         ])
     }
-    
-    private func setCreateButtonEnabled(isEnabled: Bool) {
-        isCreateButtonEnabled = isEnabled
-        createButton.isEnabled = isEnabled
-        createButton.alpha = isEnabled ? 1 : 0.5
+}
+
+//MARK: - UITextFieldDelegate
+extension AddBikeView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
