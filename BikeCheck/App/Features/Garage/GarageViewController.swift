@@ -16,6 +16,7 @@ final class GarageViewController: UIViewController {
     //MARK: - Callbacks
     var onLogoutTapped: (() -> Void)?
     var onBikeDetailTapped: ((Int) -> Void)?
+    var onAddBikeTapped: (() -> Void)?
     
     // MARK: - Initializers
     init(viewModel: GarageViewModel) {
@@ -46,8 +47,7 @@ final class GarageViewController: UIViewController {
     }
     
     @objc private func tapAdd() {
-        print("Add button tapped")
-        //TODO: - здесь будет переход на экран добавления велика
+        onAddBikeTapped?()
     }
     
     //MARK: - Private Methods
