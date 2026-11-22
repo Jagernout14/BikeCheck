@@ -130,12 +130,12 @@ extension BikeDetailViewController: UITableViewDelegate {
         let action = UIContextualAction(style: .destructive, title: "Удалить") { action, view, completion in
             let component = self.viewModel.components[indexPath.row]
             let alert = UIAlertController(title: nil, message: "Вы действительно хотите удалить \(component.catalog.name)?", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .destructive) { _ in
+            let okAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
                 self.viewModel.delete(componentId: component.id)
                 completion(true)
             }
             
-            let cancelAction = UIAlertAction(title: "Нет", style: .cancel) { _ in
+            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel) { _ in
                 completion(false)
             }
             
