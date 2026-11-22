@@ -125,4 +125,26 @@ extension BikeDetailViewController: UITableViewDelegate {
         let component = viewModel.components[indexPath.row]
         onComponentTapped?(component.id)
     }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: "Удалить") { action, view, completion in
+            let component = self.viewModel.components[indexPath.row]
+            let alert = UIAlertController(title: nil, message: "Вы действительно хотите удалить \(component.catalog.name)?", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .destructive) { _ in
+                self.viewModel.delete(componentId: component.id)
+                completion(true)
+            }
+            
+            let cancelAction = UIAlertAction(title: "Нет", style: .cancel) { _ in
+                completion(false)
+            }
+            
+            alert.addAction(okAction)
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true)
+        }
+        
+        return UISwipeActionsConfiguration(actions: [action])
+    }
 }
+
