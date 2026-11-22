@@ -54,7 +54,7 @@ final class AddServiceViewModel {
                 try await client.send(ComponentsEndpoint.addService(id: componentId, newService))
                 onSuccess?()
             } catch {
-                onError?((error as? NetworkError)?.userMessage ?? "Обслуживание пошло по ...")
+                onError?((error as? NetworkError)?.userMessage ?? "Не удалось добавить обслуживание")
             }
         }
     }
