@@ -41,4 +41,18 @@ final class BikeDetailViewModel {
             }
         }
     }
+    
+    func delete(componentId: Int) {
+        onLoading?(true)
+        Task { [weak self] in
+            guard let self else { return }
+            defer { onLoading?(false) }
+            do {
+                try await client.send(ComponentsEndpoint.remove(id: componentId))
+                load()
+            } catch {
+                onError?((error as? NetworkError)?.userMessage ?? "Не получилось удалить компонент, попробуйте еще раз")
+            }
+        }
+    }
 }
