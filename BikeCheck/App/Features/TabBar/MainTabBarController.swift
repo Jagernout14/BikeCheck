@@ -123,6 +123,7 @@ extension MainTabBarController {
             openComponentScreen(componentId: componentId, navigationController: navigationController)
             
         }
+        
         navigationController.pushViewController(bikeViewController, animated: true)
     }
     
@@ -136,12 +137,21 @@ extension MainTabBarController {
             source?.dismiss(animated: true)
             onInstalled()
         }
+        
         source.present(catalogNavigationController, animated: true)
     }
     
     private func openComponentScreen(componentId: Int, navigationController: UINavigationController) {
         let componentViewModel = ComponentViewModel(client: client, componentId: componentId)
         let componentViewController = ComponentViewController(viewModel: componentViewModel)
+        
+        componentViewController.onAddServiceTapped = { [weak self, weak componentViewController] in
+            guard let self, let componentViewController else { return }
+            openAddServiceScreen(source: componentViewController, componentId: componentId) {
+                componentViewModel.load()
+            }
+        }
+        
         navigationController.pushViewController(componentViewController, animated: true)
     }
     
@@ -157,5 +167,19 @@ extension MainTabBarController {
         }
         
         source.present(addNavigationController, animated: true)
+    }
+    
+    private func openAddServiceScreen(source: UIViewController, componentId: Int, onCreated: @escaping () -> Void) {
+        let addServiceViewModel = AddServiceViewModel(client: client, componentId: componentId)
+        let addServiceViewController = AddServiceViewController(viewModel: addServiceViewModel)
+        let addServiceNavigationController = UINavigationController(rootViewController: addServiceViewController)
+        setupNavigationBar(for: addServiceNavigationController)
+        
+        addServiceViewController.onServiceCreated = { [weak source] in
+            source?.dismiss(animated: true)
+            onCreated()
+        }
+        
+        source.present(addServiceNavigationController, animated: true)
     }
 }
