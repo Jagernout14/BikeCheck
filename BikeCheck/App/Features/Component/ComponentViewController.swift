@@ -62,6 +62,11 @@ final class ComponentViewController: UIViewController {
         
         viewModel.onLoading = { isLoading in
             print("Component is loading: \(isLoading)")
+            //TODO: - Spinner
+        }
+        
+        componentView.onAddTapped = { [weak self] in
+            self?.onAddServiceTapped?()
         }
     }
 }
