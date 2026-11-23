@@ -13,7 +13,7 @@ final class AddServiceViewModel {
     var doneAt: Date = .now
     var mileageText = "" {
         didSet {
-            validateTextField()
+            validateForm()
         }
     }
     
@@ -28,8 +28,8 @@ final class AddServiceViewModel {
     //MARK: - Callbacks
     var onError: ((String) -> Void)?
     var onLoading: ((Bool) -> Void)?
-    var onSuccess: (() -> Void)?
-    var onCreateButtonEnabled: ((Bool) -> Void)?
+    var onCreated: (() -> Void)?
+    var onSaveEnabledChange: ((Bool) -> Void)?
     
     //MARK: - Initializers
     init(client: NetworkClient, componentId: Int) {
@@ -52,7 +52,7 @@ final class AddServiceViewModel {
             }
             do {
                 try await client.send(ComponentsEndpoint.addService(id: componentId, newService))
-                onSuccess?()
+                onCreated?()
             } catch {
                 onError?((error as? NetworkError)?.userMessage ?? "Не удалось добавить обслуживание")
             }
@@ -60,11 +60,11 @@ final class AddServiceViewModel {
     }
     
     //MARK: - Private Methods
-    private func validateTextField() {
+    private func validateForm() {
         guard let mileage, mileage >= 0 else {
-            onCreateButtonEnabled?(false)
+            onSaveEnabledChange?(false)
             return
         }
-        onCreateButtonEnabled?(true)
+        onSaveEnabledChange?(true)
     }
 }
