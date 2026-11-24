@@ -16,6 +16,7 @@ final class BikeDetailViewController: UIViewController {
     //MARK: - Callbacks
     var onAddTapped: (() -> Void)?
     var onComponentTapped: ((Int) -> Void)?
+    var onComponentDeleted: (() -> Void)?
     
     // MARK: - Initializers
     init(viewModel: BikeDetailViewModel) {
@@ -71,6 +72,10 @@ final class BikeDetailViewController: UIViewController {
             title = bike.name
             bikeDetailView.configureStats(mileage: "-", weight: bike.totalWeightG.kilosText)
             bikeDetailView.tableView.reloadData()
+        }
+        
+        viewModel.onComponentDeleted = { [weak self] in
+            self?.onComponentDeleted?()
         }
     }
     
@@ -147,4 +152,3 @@ extension BikeDetailViewController: UITableViewDelegate {
         return UISwipeActionsConfiguration(actions: [action])
     }
 }
-

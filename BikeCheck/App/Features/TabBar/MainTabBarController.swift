@@ -53,7 +53,9 @@ final class MainTabBarController: UITabBarController {
         
         garageViewController.onBikeDetailTapped = { [weak self, weak garageNavigationController] bikeId in
             guard let self, let garageNavigationController else { return }
-            openBikeDetailScreen(bikeId: bikeId, navigationController: garageNavigationController)
+            openBikeDetailScreen(bikeId: bikeId, navigationController: garageNavigationController) {
+                garageViewModel.load()
+            }
         }
         
         garageViewController.onAddBikeTapped = { [weak self, weak garageViewController] in
@@ -108,20 +110,24 @@ final class MainTabBarController: UITabBarController {
 //MARK: - Opening Screens Methods
 extension MainTabBarController {
     
-    private func openBikeDetailScreen(bikeId: Int, navigationController: UINavigationController) {
+    private func openBikeDetailScreen(bikeId: Int, navigationController: UINavigationController, onBikeChanged: @escaping () -> Void) {
         let bikeViewModel = BikeDetailViewModel(client: client, bikeId: bikeId)
         let bikeViewController = BikeDetailViewController(viewModel: bikeViewModel)
         bikeViewController.onAddTapped = { [weak self, weak bikeViewController] in
             guard let self, let bikeViewController else { return }
             openCatalogScreen(bikeId: bikeId, source: bikeViewController) {
                 bikeViewModel.load()
+                onBikeChanged()
             }
         }
         
         bikeViewController.onComponentTapped = { [weak self, weak navigationController] componentId in
             guard let self, let navigationController else { return }
             openComponentScreen(componentId: componentId, navigationController: navigationController)
-            
+        }
+        
+        bikeViewController.onComponentDeleted = {
+            onBikeChanged()
         }
         
         navigationController.pushViewController(bikeViewController, animated: true)
