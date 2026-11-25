@@ -56,6 +56,10 @@ final class AddServiceViewController: UIViewController {
             self?.viewModel.mileageText = mileage
         }
         
+        addServiceView.onNoteChange = { [weak self] text in
+            self?.viewModel.noteText = text
+        }
+        
         viewModel.onCreated = { [weak self] in
             self?.onServiceCreated?()
         }
