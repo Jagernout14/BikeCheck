@@ -66,17 +66,18 @@ final class MainTabBarController: UITabBarController {
             }
         }
         
-        let serviceViewController = MockServiceViewController()
-        let serviceNavigationController = UINavigationController(rootViewController: serviceViewController)
-        serviceViewController.title = "Сервис"
-        serviceNavigationController.tabBarItem = UITabBarItem(
-            title: "Сервис",
+        let historyViewModel = HistoryViewModel(client: client)
+        let historyViewController = HistoryViewController(viewModel: historyViewModel)
+        let historyNavigationController = UINavigationController(rootViewController: historyViewController)
+        historyViewController.title = "История"
+        historyNavigationController.tabBarItem = UITabBarItem(
+            title: "История",
             image: UIImage(systemName: "wrench.and.screwdriver"),
             selectedImage: nil
         )
-        setupNavigationBar(for: serviceNavigationController)
+        setupNavigationBar(for: historyNavigationController)
         
-        viewControllers = [garageNavigationController, serviceNavigationController]
+        viewControllers = [garageNavigationController, historyNavigationController]
     }
     
     private func setupAppearance() {
