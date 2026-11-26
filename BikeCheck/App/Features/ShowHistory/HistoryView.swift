@@ -29,13 +29,9 @@ final class HistoryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupView(noData: Bool) {
-        if noData {
-            tableView.backgroundView = placeholder
-            placeholder.isHidden = false
-        } else {
-            placeholder.isHidden = true
-        }
+    func setupView(isVisible: Bool) {
+        placeholder.isHidden = !isVisible
+        
     }
     
     //MARK: - Private Methods
@@ -65,8 +61,7 @@ final class HistoryView: UIView {
         placeholder.textAlignment = .center
         placeholder.numberOfLines = 0
         placeholder.isHidden = true
+        tableView.backgroundView = placeholder
         
-        placeholder.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(placeholder)
     }
 }

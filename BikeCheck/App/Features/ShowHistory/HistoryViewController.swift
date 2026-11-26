@@ -55,7 +55,7 @@ final class HistoryViewController: UIViewController {
         viewModel.onUpdate = { [weak self] in
             guard let self else { return }
             self.historyView.tableView.reloadData()
-            self.historyView.setupView(noData: viewModel.services.isEmpty)
+            self.historyView.setupView(isVisible: viewModel.services.isEmpty)
         }
     }
     
