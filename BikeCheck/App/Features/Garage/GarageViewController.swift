@@ -59,6 +59,7 @@ final class GarageViewController: UIViewController {
     }
     
     private func setupNavigationBar() {
+        title = "Гараж"
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "rectangle.portrait.and.arrow.right"),
             style: .plain,

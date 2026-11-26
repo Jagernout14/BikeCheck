@@ -39,7 +39,6 @@ final class MainTabBarController: UITabBarController {
         let garageViewModel = GarageViewModel(client: client, selectedBikeStorage: selectedBikeStorage)
         let garageViewController = GarageViewController(viewModel: garageViewModel)
         let garageNavigationController = UINavigationController(rootViewController: garageViewController)
-        garageViewController.title = "Гараж"
         garageNavigationController.tabBarItem = UITabBarItem(
             title: "Гараж",
             image: UIImage(systemName: "bicycle"),
@@ -69,7 +68,6 @@ final class MainTabBarController: UITabBarController {
         let historyViewModel = HistoryViewModel(client: client)
         let historyViewController = HistoryViewController(viewModel: historyViewModel)
         let historyNavigationController = UINavigationController(rootViewController: historyViewController)
-        historyViewController.title = "История"
         historyNavigationController.tabBarItem = UITabBarItem(
             title: "История",
             image: UIImage(systemName: "wrench.and.screwdriver"),
