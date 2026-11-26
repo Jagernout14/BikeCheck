@@ -32,8 +32,11 @@ final class HistoryViewController: UIViewController {
         super.viewDidLoad()
         bind()
         setupNavBarAndTableView()
-        viewModel.load()
-        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.refreshServices()
     }
     
     //MARK: - Private Methods
@@ -92,5 +95,4 @@ extension HistoryViewController: UITableViewDelegate {
             viewModel.load()
         }
     }
-    
 }

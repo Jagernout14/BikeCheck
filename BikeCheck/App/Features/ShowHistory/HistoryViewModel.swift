@@ -49,4 +49,10 @@ final class HistoryViewModel {
             }
         }
     }
+    
+    func refreshServices() {
+        services = []
+        total = 0
+        load()
+    }
 }
