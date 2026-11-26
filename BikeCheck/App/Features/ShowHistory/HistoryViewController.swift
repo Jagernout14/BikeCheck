@@ -75,8 +75,9 @@ extension HistoryViewController: UITableViewDataSource {
         }
         
         let item = viewModel.services[indexPath.row]
+        let date = DateFormatter.makeDateString(from: item.doneAt)
         
-        cell.configure(title: "\(item.componentName) · \(item.bikeName)", subtitle: "\(item.doneAt) · \(item.mileageKm) км", note: item.note)
+        cell.configure(title: "\(item.componentName) · \(item.bikeName)", subtitle: "\(date) · \(item.mileageKm) км", note: item.note)
         cell.accessoryType = .disclosureIndicator
         return cell
     }

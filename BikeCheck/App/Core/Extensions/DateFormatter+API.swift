@@ -20,4 +20,11 @@ extension DateFormatter {
         formatter.dateFormat = "dd.MM.yyyy"
         return formatter
     }()
+    
+    static func makeDateString(from apiString: String) -> String {
+        guard let date = apiDate.date(from: apiString) else {
+            return apiString
+        }
+        return uiDate.string(from: date)
+    }
 }

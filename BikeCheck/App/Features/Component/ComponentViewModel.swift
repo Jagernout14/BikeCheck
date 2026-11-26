@@ -65,20 +65,12 @@ final class ComponentViewModel {
         guard let component else { return }
         infoRows = [
             ComponentRow(text: "Вес", secondaryText: component.catalog.weightG?.gramsText ?? "-"),
-            ComponentRow(text: "Установлен", secondaryText: makeDisplayDate(from: component.installedAt)),
-            ComponentRow(text: "Последнее обслуживание", secondaryText: component.lastServiceAt.map { makeDisplayDate(from: $0) } ?? "-")
+            ComponentRow(text: "Установлен", secondaryText: DateFormatter.makeDateString(from: component.installedAt)),
+            ComponentRow(text: "Последнее обслуживание", secondaryText: component.lastServiceAt.map { DateFormatter.makeDateString(from: $0) } ?? "-")
         ]
         
         serviceRows = services.map { service in
-            ComponentRow(text: "\(service.mileageKm) км", secondaryText: makeDisplayDate(from: service.doneAt))
+            ComponentRow(text: "\(service.mileageKm) км", secondaryText: DateFormatter.makeDateString(from: service.doneAt))
         }
-    }
-    
-    private func makeDisplayDate(from string: String) -> String {
-        guard let date = DateFormatter.apiDate.date(from: string) else {
-            return "-"
-        }
-        let displayDate = DateFormatter.uiDate.string(from: date)
-        return displayDate
     }
 }
