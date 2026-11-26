@@ -64,6 +64,7 @@ final class HistoryViewController: UIViewController {
     }
 }
 
+//MARK: - TableViewDataSource
 extension HistoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.services.count
@@ -83,6 +84,13 @@ extension HistoryViewController: UITableViewDataSource {
     }
 }
 
+//MARK: - TableViewDelegate
 extension HistoryViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == viewModel.services.count - 1 {
+            viewModel.load()
+        }
+    }
     
 }
