@@ -39,7 +39,6 @@ final class MainTabBarController: UITabBarController {
         let garageViewModel = GarageViewModel(client: client, selectedBikeStorage: selectedBikeStorage)
         let garageViewController = GarageViewController(viewModel: garageViewModel)
         let garageNavigationController = UINavigationController(rootViewController: garageViewController)
-        garageViewController.title = "Гараж"
         garageNavigationController.tabBarItem = UITabBarItem(
             title: "Гараж",
             image: UIImage(systemName: "bicycle"),
@@ -66,17 +65,17 @@ final class MainTabBarController: UITabBarController {
             }
         }
         
-        let serviceViewController = MockServiceViewController()
-        let serviceNavigationController = UINavigationController(rootViewController: serviceViewController)
-        serviceViewController.title = "Сервис"
-        serviceNavigationController.tabBarItem = UITabBarItem(
-            title: "Сервис",
+        let historyViewModel = HistoryViewModel(client: client)
+        let historyViewController = HistoryViewController(viewModel: historyViewModel)
+        let historyNavigationController = UINavigationController(rootViewController: historyViewController)
+        historyNavigationController.tabBarItem = UITabBarItem(
+            title: "История",
             image: UIImage(systemName: "wrench.and.screwdriver"),
             selectedImage: nil
         )
-        setupNavigationBar(for: serviceNavigationController)
+        setupNavigationBar(for: historyNavigationController)
         
-        viewControllers = [garageNavigationController, serviceNavigationController]
+        viewControllers = [garageNavigationController, historyNavigationController]
     }
     
     private func setupAppearance() {

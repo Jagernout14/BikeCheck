@@ -14,6 +14,8 @@ final class AddServiceView: UIView {
     private let datePicker = UIDatePicker()
     private let mileageTitleLabel = UILabel()
     private let dateTitleLabel = UILabel()
+    private let noteTitleLabel = UILabel()
+    private let noteTextView = UITextView()
     private let createButton = UIButton(type: .system)
     private let tapGesture = UITapGestureRecognizer()
     
@@ -21,6 +23,7 @@ final class AddServiceView: UIView {
     var onMileageChange: ((String) -> Void)?
     var onDateChange: ((Date) -> Void)?
     var onCreateTapped: (() -> Void)?
+    var onNoteChange: ((String) -> Void)?
     
     //MARK: - Initializers
     override init(frame: CGRect) {
@@ -63,6 +66,8 @@ final class AddServiceView: UIView {
         setupMileageTextField()
         setupDateTitleLabel()
         setupDatePicker()
+        setupNoteTitleLabel()
+        setupNoteTextView()
         setupCreateButton()
         setupTapGesture()
     }
@@ -136,6 +141,41 @@ final class AddServiceView: UIView {
         ])
     }
     
+    private func setupNoteTitleLabel() {
+        noteTitleLabel.font = .systemFont(ofSize: 13, weight: .semibold)
+        noteTitleLabel.textColor = .bcTextSecondary
+        noteTitleLabel.text = "Описание".uppercased()
+        noteTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(noteTitleLabel)
+        
+        NSLayoutConstraint.activate([
+            noteTitleLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 32),
+            noteTitleLabel.topAnchor.constraint(equalTo: datePicker.bottomAnchor, constant: 24)
+        ])
+    }
+    
+    private func setupNoteTextView() {
+        noteTextView.font = .systemFont(ofSize: 17)
+        noteTextView.textColor = .bcTextMain
+        noteTextView.backgroundColor = .bcCard
+        noteTextView.textContainerInset = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        noteTextView.layer.cornerRadius = 10
+        noteTextView.clipsToBounds = true
+        noteTextView.tintColor = .bcAccent
+        
+        noteTextView.delegate = self
+        
+        noteTextView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(noteTextView)
+        
+        NSLayoutConstraint.activate([
+            noteTextView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            noteTextView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            noteTextView.topAnchor.constraint(equalTo: noteTitleLabel.bottomAnchor, constant: 8),
+            noteTextView.heightAnchor.constraint(equalToConstant: 120)
+        ])
+    }
+    
     private func setupCreateButton() {
         createButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
         createButton.setTitle("Сохранить", for: .normal)
@@ -161,5 +201,11 @@ final class AddServiceView: UIView {
         tapGesture.cancelsTouchesInView = false
         tapGesture.addTarget(self, action: #selector(hideKeyboard))
         addGestureRecognizer(tapGesture)
+    }
+}
+
+extension AddServiceView: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        onNoteChange?(noteTextView.text)
     }
 }

@@ -16,12 +16,18 @@ final class AddServiceViewModel {
             validateForm()
         }
     }
+    var noteText = ""
     
     //MARK: - Private Properties
     private let client: NetworkClient
     private let componentId: Int
     private var mileage: Int? {
         Int(mileageText)
+    }
+    
+    private var note: String? {
+        let text = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
+        return text.isEmpty ? nil : text
     }
     private var isLoading = false
     
@@ -43,7 +49,7 @@ final class AddServiceViewModel {
         onLoading?(true)
         isLoading = true
         let dateString = DateFormatter.apiDate.string(from: doneAt)
-        let newService = NewService(doneAt: dateString, mileageKm: mileage, note: nil)
+        let newService = NewService(doneAt: dateString, mileageKm: mileage, note: note)
         Task { [weak self] in
             guard let self else { return }
             defer {
