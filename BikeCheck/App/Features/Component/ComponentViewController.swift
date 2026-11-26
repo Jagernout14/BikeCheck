@@ -44,7 +44,7 @@ final class ComponentViewController: UIViewController {
         componentView.tableView.dataSource = self
         componentView.tableView.delegate = self
         componentView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "infoCell")
-        componentView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "serviceCell")
+        componentView.tableView.register(ServiceCell.self, forCellReuseIdentifier: ServiceCell.identifier)
     }
     
     private func bind() {
@@ -100,15 +100,11 @@ extension ComponentViewController: UITableViewDataSource {
             cell.contentConfiguration = content
             return cell
         default:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "serviceCell", for: indexPath)
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ServiceCell.identifier) as? ServiceCell else {
+                return UITableViewCell()
+            }
             let row = viewModel.serviceRows[indexPath.row]
-            var content = UIListContentConfiguration.subtitleCell()
-            content.text = row.text
-            content.secondaryText = row.secondaryText
-            cell.backgroundColor = .bcCard
-            content.textProperties.color = .bcTextMain
-            content.secondaryTextProperties.color = .bcTextSecondary
-            cell.contentConfiguration = content
+            cell.configure(title: row.text, subtitle: row.secondaryText, note: row.note)
             return cell
         }
     }
