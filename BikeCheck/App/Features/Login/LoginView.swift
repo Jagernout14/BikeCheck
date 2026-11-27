@@ -13,16 +13,18 @@ final class LoginView: UIView {
     private let titleLabel = UILabel()
     private let emailField = UITextField()
     private let passwordField = UITextField()
-    private let loginButton = UIButton(type: .system)
-    private let registerButton = UIButton(type: .system)
+    private let submitButton = UIButton(type: .system)
+    private let switchModeButton = UIButton(type: .system)
     private let stackView = UIStackView()
-    private var isLoginEnabled = false
+    private let hintLabel = UILabel()
+    private let confirmPasswordField = UITextField()
+    private var isSubmitEnabled = false
     
     // MARK: - Callbacks
     var onEmailChange: ((String) -> Void)?
     var onPasswordChange: ((String) -> Void)?
-    var onLoginTap: (() -> Void)?
-    var onRegisterTap: (() -> Void)?
+    var onSubmitTap: (() -> Void)?
+    var onSwitchModeTap: (() -> Void)?
     
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -43,29 +45,29 @@ final class LoginView: UIView {
         onPasswordChange?(passwordField.text ?? "")
     }
     
-    @objc private func loginTapped() {
-        onLoginTap?()
+    @objc private func submitTapped() {
+        onSubmitTap?()
     }
     
-    @objc private func registerTapped() {
-        onRegisterTap?()
+    @objc private func switchModeTapped() {
+        onSwitchModeTap?()
     }
     
     // MARK: - Public Methods
-    func setLoginEnabled(_ isEnabled: Bool) {
-        isLoginEnabled = isEnabled
-        loginButton.isEnabled = isEnabled
-        loginButton.alpha = isEnabled ? 1 : 0.5
+    func setSubmitEnabled(_ isEnabled: Bool) {
+        isSubmitEnabled = isEnabled
+        submitButton.isEnabled = isEnabled
+        submitButton.alpha = isEnabled ? 1 : 0.5
     }
     
     func setLoading(_ isLoading: Bool) {
         emailField.isEnabled = !isLoading
         passwordField.isEnabled = !isLoading
-        registerButton.isEnabled = !isLoading
+        switchModeButton.isEnabled = !isLoading
         
-        let canLogin = !isLoading && isLoginEnabled
-        loginButton.isEnabled = canLogin
-        loginButton.alpha = canLogin ? 1 : 0.5
+        let canSubmit = !isLoading && isSubmitEnabled
+        submitButton.isEnabled = canSubmit
+        submitButton.alpha = canSubmit ? 1 : 0.5
         
     }
     
@@ -75,8 +77,8 @@ final class LoginView: UIView {
         setupTitleLabel()
         setupEmailField()
         setupPasswordField()
-        setupLoginButton()
-        setupRegisterButton()
+        setupSubmitButton()
+        setupSwitchModeButton()
         setupStackView()
         setupConstraints()
         setupActions()
@@ -117,19 +119,19 @@ final class LoginView: UIView {
         passwordField.textContentType = .password
     }
     
-    private func setupLoginButton() {
-        loginButton.setTitle("Войти", for: .normal)
-        loginButton.setTitleColor(.bcTextOnAccent, for: .normal)
-        loginButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
-        loginButton.backgroundColor = .bcAccent
-        loginButton.layer.cornerRadius = 12
-        setLoginEnabled(false)
+    private func setupSubmitButton() {
+        submitButton.setTitle("Войти", for: .normal)
+        submitButton.setTitleColor(.bcTextOnAccent, for: .normal)
+        submitButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
+        submitButton.backgroundColor = .bcAccent
+        submitButton.layer.cornerRadius = 12
+        setSubmitEnabled(false)
     }
     
-    private func setupRegisterButton() {
-        registerButton.setTitle("Зарегистрироваться", for: .normal)
-        registerButton.setTitleColor(.bcAccent, for: .normal)
-        registerButton.titleLabel?.font = .systemFont(ofSize: 17)
+    private func setupSwitchModeButton() {
+        switchModeButton.setTitle("Зарегистрироваться", for: .normal)
+        switchModeButton.setTitleColor(.bcAccent, for: .normal)
+        switchModeButton.titleLabel?.font = .systemFont(ofSize: 17)
     }
     
     private func setupStackView() {
@@ -137,8 +139,8 @@ final class LoginView: UIView {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(emailField)
         stackView.addArrangedSubview(passwordField)
-        stackView.addArrangedSubview(loginButton)
-        stackView.addArrangedSubview(registerButton)
+        stackView.addArrangedSubview(submitButton)
+        stackView.addArrangedSubview(switchModeButton)
         
         stackView.spacing = 12
         stackView.setCustomSpacing(32, after: titleLabel)
@@ -156,15 +158,15 @@ final class LoginView: UIView {
             
             emailField.heightAnchor.constraint(equalToConstant: 48),
             passwordField.heightAnchor.constraint(equalTo: emailField.heightAnchor),
-            loginButton.heightAnchor.constraint(equalToConstant: 50),
-            registerButton.heightAnchor.constraint(equalToConstant: 44)
+            submitButton.heightAnchor.constraint(equalToConstant: 50),
+            switchModeButton.heightAnchor.constraint(equalToConstant: 44)
         ])
     }
     
     private func setupActions() {
         emailField.addTarget(self, action: #selector(emailChanged), for: .editingChanged)
         passwordField.addTarget(self, action: #selector(passwordChanged), for: .editingChanged)
-        loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
-        registerButton.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
+        submitButton.addTarget(self, action: #selector(submitTapped), for: .touchUpInside)
+        switchModeButton.addTarget(self, action: #selector(switchModeTapped), for: .touchUpInside)
     }
 }
