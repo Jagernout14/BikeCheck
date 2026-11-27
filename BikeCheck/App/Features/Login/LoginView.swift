@@ -79,6 +79,8 @@ final class LoginView: UIView {
         setupPasswordField()
         setupSubmitButton()
         setupSwitchModeButton()
+        setupHintLabel()
+        setupConfirmPasswordField()
         setupStackView()
         setupConstraints()
         setupActions()
@@ -89,6 +91,14 @@ final class LoginView: UIView {
         titleLabel.font = .systemFont(ofSize: 34, weight: .bold)
         titleLabel.textColor = .bcTextMain
         titleLabel.textAlignment = .center
+    }
+    
+    private func setupHintLabel() {
+        hintLabel.text = "Минимум 8 символов"
+        hintLabel.font = .systemFont(ofSize: 13)
+        hintLabel.textColor = .bcTextSecondary
+        hintLabel.numberOfLines = 0
+        hintLabel.isHidden = true
     }
     
     private func setupTextFieldStyle(_ textField: UITextField, placeholder: String) {
@@ -119,6 +129,13 @@ final class LoginView: UIView {
         passwordField.textContentType = .password
     }
     
+    private func setupConfirmPasswordField() {
+        setupTextFieldStyle(confirmPasswordField, placeholder: "Повторите пароль")
+        confirmPasswordField.isSecureTextEntry = true
+        confirmPasswordField.textContentType = .password
+        confirmPasswordField.isHidden = true
+    }
+    
     private func setupSubmitButton() {
         submitButton.setTitle("Войти", for: .normal)
         submitButton.setTitleColor(.bcTextOnAccent, for: .normal)
@@ -139,12 +156,15 @@ final class LoginView: UIView {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(emailField)
         stackView.addArrangedSubview(passwordField)
+        stackView.addArrangedSubview(hintLabel)
+        stackView.addArrangedSubview(confirmPasswordField)
         stackView.addArrangedSubview(submitButton)
         stackView.addArrangedSubview(switchModeButton)
         
         stackView.spacing = 12
         stackView.setCustomSpacing(32, after: titleLabel)
         stackView.setCustomSpacing(24, after: passwordField)
+        stackView.setCustomSpacing(24, after: confirmPasswordField)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stackView)
@@ -157,6 +177,7 @@ final class LoginView: UIView {
             stackView.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor),
             
             emailField.heightAnchor.constraint(equalToConstant: 48),
+            confirmPasswordField.heightAnchor.constraint(equalTo: emailField.heightAnchor),
             passwordField.heightAnchor.constraint(equalTo: emailField.heightAnchor),
             submitButton.heightAnchor.constraint(equalToConstant: 50),
             switchModeButton.heightAnchor.constraint(equalToConstant: 44)
