@@ -73,11 +73,20 @@ final class LoginViewModel {
         confirmPassword = ""
         mode = mode == .login ? .register : .login
         onModeChange?(mode)
+        validateForm()
     }
     
     // MARK: - Private Methods
     private func validateForm() {
-        let isValid = !email.isEmpty && !password.isEmpty
+        let isValid: Bool
+        
+        switch mode {
+        case .login:
+            isValid = !email.isEmpty && !password.isEmpty
+        case .register:
+            isValid = email.contains("@") && password.count >= 8 && password == confirmPassword
+        }
+        
         onLoginEnabledChange?(isValid)
     }
 }
