@@ -66,6 +66,17 @@ final class ComponentViewModel {
         }
     }
     
+    func makeServiceDetailDisplay(at index: Int) -> ServiceDetailDisplay {
+        let service = services[index]
+        return ServiceDetailDisplay(
+            bikeName: nil,
+            componentName: screenTitle,
+            dateOfService: DateFormatter.makeDateString(from: service.doneAt),
+            mileage: "\(service.mileageKm) км",
+            note: service.note
+        )
+    }
+    
     //MARK: - Private Methods
     private func makeRows() {
         guard let component else { return }
@@ -80,4 +91,3 @@ final class ComponentViewModel {
         }
     }
 }
-

@@ -15,6 +15,7 @@ final class ComponentViewController: UIViewController {
     
     //MARK: - Callbacks
     var onAddServiceTapped: (() -> Void)?
+    var onServiceTapped: ((ServiceDetailDisplay) -> Void)?
     
     //MARK: - Initializers
     init(viewModel: ComponentViewModel) {
@@ -121,11 +122,18 @@ extension ComponentViewController: UITableViewDataSource {
 
 //MARK: - TableViewDelegate
 extension ComponentViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         guard let headerView = view as? UITableViewHeaderFooterView else { return }
         guard var configuration = headerView.contentConfiguration as? UIListContentConfiguration else { return }
         configuration.textProperties.color = .bcTextSecondary
         headerView.contentConfiguration = configuration
-        
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard indexPath.section == 1 else { return }
+        let serviceDisplay = viewModel.makeServiceDetailDisplay(at: indexPath.row)
+        onServiceTapped?(serviceDisplay)
     }
 }

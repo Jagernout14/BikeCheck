@@ -162,6 +162,11 @@ extension MainTabBarController {
             }
         }
         
+        componentViewController.onServiceTapped = { [weak self, weak componentViewController] display in
+            guard let self, let componentViewController else { return }
+            openServiceDetailScreen(display: display, source: componentViewController)
+        }
+        
         navigationController.pushViewController(componentViewController, animated: true)
     }
     
