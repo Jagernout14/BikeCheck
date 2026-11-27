@@ -22,6 +22,12 @@ final class LoginViewModel {
         }
     }
     
+    var confirmPassword = "" {
+        didSet {
+            validateForm()
+        }
+    }
+    
     // MARK: - Private Properties
     private let client: NetworkClient
     private let tokenStorage: TokenStorageProtocol
