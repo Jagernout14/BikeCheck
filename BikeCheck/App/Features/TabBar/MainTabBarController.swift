@@ -39,7 +39,6 @@ final class MainTabBarController: UITabBarController {
         let garageViewModel = GarageViewModel(client: client, selectedBikeStorage: selectedBikeStorage)
         let garageViewController = GarageViewController(viewModel: garageViewModel)
         let garageNavigationController = UINavigationController(rootViewController: garageViewController)
-        garageViewController.title = "Гараж"
         garageNavigationController.tabBarItem = UITabBarItem(
             title: "Гараж",
             image: UIImage(systemName: "bicycle"),
@@ -53,7 +52,9 @@ final class MainTabBarController: UITabBarController {
         
         garageViewController.onBikeDetailTapped = { [weak self, weak garageNavigationController] bikeId in
             guard let self, let garageNavigationController else { return }
-            openBikeDetailScreen(bikeId: bikeId, navigationController: garageNavigationController)
+            openBikeDetailScreen(bikeId: bikeId, navigationController: garageNavigationController) {
+                garageViewModel.load()
+            }
         }
         
         garageViewController.onAddBikeTapped = { [weak self, weak garageViewController] in
@@ -64,17 +65,22 @@ final class MainTabBarController: UITabBarController {
             }
         }
         
-        let serviceViewController = MockServiceViewController()
-        let serviceNavigationController = UINavigationController(rootViewController: serviceViewController)
-        serviceViewController.title = "Сервис"
-        serviceNavigationController.tabBarItem = UITabBarItem(
-            title: "Сервис",
+        let historyViewModel = HistoryViewModel(client: client)
+        let historyViewController = HistoryViewController(viewModel: historyViewModel)
+        historyViewController.onServiceTapped = { [weak self, weak historyViewController] display in
+            guard let self, let historyViewController else { return }
+            openServiceDetailScreen(display: display, source: historyViewController)
+        }
+        
+        let historyNavigationController = UINavigationController(rootViewController: historyViewController)
+        historyNavigationController.tabBarItem = UITabBarItem(
+            title: "История",
             image: UIImage(systemName: "wrench.and.screwdriver"),
             selectedImage: nil
         )
-        setupNavigationBar(for: serviceNavigationController)
+        setupNavigationBar(for: historyNavigationController)
         
-        viewControllers = [garageNavigationController, serviceNavigationController]
+        viewControllers = [garageNavigationController, historyNavigationController]
     }
     
     private func setupAppearance() {
@@ -108,21 +114,26 @@ final class MainTabBarController: UITabBarController {
 //MARK: - Opening Screens Methods
 extension MainTabBarController {
     
-    private func openBikeDetailScreen(bikeId: Int, navigationController: UINavigationController) {
+    private func openBikeDetailScreen(bikeId: Int, navigationController: UINavigationController, onBikeChanged: @escaping () -> Void) {
         let bikeViewModel = BikeDetailViewModel(client: client, bikeId: bikeId)
         let bikeViewController = BikeDetailViewController(viewModel: bikeViewModel)
         bikeViewController.onAddTapped = { [weak self, weak bikeViewController] in
             guard let self, let bikeViewController else { return }
             openCatalogScreen(bikeId: bikeId, source: bikeViewController) {
                 bikeViewModel.load()
+                onBikeChanged()
             }
         }
         
         bikeViewController.onComponentTapped = { [weak self, weak navigationController] componentId in
             guard let self, let navigationController else { return }
             openComponentScreen(componentId: componentId, navigationController: navigationController)
-            
         }
+        
+        bikeViewController.onComponentDeleted = {
+            onBikeChanged()
+        }
+        
         navigationController.pushViewController(bikeViewController, animated: true)
     }
     
@@ -136,12 +147,26 @@ extension MainTabBarController {
             source?.dismiss(animated: true)
             onInstalled()
         }
+        
         source.present(catalogNavigationController, animated: true)
     }
     
     private func openComponentScreen(componentId: Int, navigationController: UINavigationController) {
         let componentViewModel = ComponentViewModel(client: client, componentId: componentId)
         let componentViewController = ComponentViewController(viewModel: componentViewModel)
+        
+        componentViewController.onAddServiceTapped = { [weak self, weak componentViewController] in
+            guard let self, let componentViewController else { return }
+            openAddServiceScreen(source: componentViewController, componentId: componentId) {
+                componentViewModel.load()
+            }
+        }
+        
+        componentViewController.onServiceTapped = { [weak self, weak componentViewController] display in
+            guard let self, let componentViewController else { return }
+            openServiceDetailScreen(display: display, source: componentViewController)
+        }
+        
         navigationController.pushViewController(componentViewController, animated: true)
     }
     
@@ -157,5 +182,26 @@ extension MainTabBarController {
         }
         
         source.present(addNavigationController, animated: true)
+    }
+    
+    private func openAddServiceScreen(source: UIViewController, componentId: Int, onCreated: @escaping () -> Void) {
+        let addServiceViewModel = AddServiceViewModel(client: client, componentId: componentId)
+        let addServiceViewController = AddServiceViewController(viewModel: addServiceViewModel)
+        let addServiceNavigationController = UINavigationController(rootViewController: addServiceViewController)
+        setupNavigationBar(for: addServiceNavigationController)
+        
+        addServiceViewController.onServiceCreated = { [weak source] in
+            source?.dismiss(animated: true)
+            onCreated()
+        }
+        
+        source.present(addServiceNavigationController, animated: true)
+    }
+    
+    private func openServiceDetailScreen(display: ServiceDetailDisplay, source: UIViewController) {
+        let serviceDetailViewController = ServiceDetailViewController(serviceDetailDisplay: display)
+        let serviceDetailNavigationController = UINavigationController(rootViewController: serviceDetailViewController)
+        setupNavigationBar(for: serviceDetailNavigationController)
+        source.present(serviceDetailNavigationController, animated: true)
     }
 }

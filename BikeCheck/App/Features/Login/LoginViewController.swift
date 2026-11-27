@@ -46,12 +46,16 @@ final class LoginViewController: UIViewController {
             self?.viewModel.password = text
         }
         
-        loginView.onLoginTap = { [weak self] in
-            self?.viewModel.login()
+        loginView.onSubmitTap = { [weak self] in
+            self?.viewModel.submit()
         }
         
-        loginView.onRegisterTap = {
-            print("Registration tapped")
+        loginView.onSwitchModeTap = { [weak self] in
+            self?.viewModel.toggleMode()
+        }
+        
+        loginView.onConfirmPasswordChange = { [weak self] text in
+            self?.viewModel.confirmPassword = text
         }
         
         viewModel.onSuccess = { [weak self] in
@@ -66,8 +70,12 @@ final class LoginViewController: UIViewController {
             self?.showError(message)
         }
         
-        viewModel.onLoginEnabledChange = { [weak self] isEnabled in
-            self?.loginView.setLoginEnabled(isEnabled)
+        viewModel.onSubmitEnabledChange = { [weak self] isEnabled in
+            self?.loginView.setSubmitEnabled(isEnabled)
+        }
+        
+        viewModel.onModeChange = { [weak self] mode in
+            self?.loginView.setMode(mode)
         }
     }
     

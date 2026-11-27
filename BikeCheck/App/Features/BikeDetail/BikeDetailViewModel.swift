@@ -19,6 +19,7 @@ final class BikeDetailViewModel {
     var onLoading: ((Bool) -> Void)?
     var onError: ((String) -> Void)?
     var onUpdate: (() -> Void)?
+    var onComponentDeleted: (() -> Void)?
     
     // MARK: - Initializers
     init(client: NetworkClient, bikeId: Int) {
@@ -38,6 +39,21 @@ final class BikeDetailViewModel {
                 onUpdate?()
             } catch {
                 onError?((error as? NetworkError)?.userMessage ?? "Что-то пошло не так. Попробуйте еще раз")
+            }
+        }
+    }
+    
+    func delete(componentId: Int) {
+        onLoading?(true)
+        Task { [weak self] in
+            guard let self else { return }
+            defer { onLoading?(false) }
+            do {
+                try await client.send(ComponentsEndpoint.remove(id: componentId))
+                load()
+                onComponentDeleted?()
+            } catch {
+                onError?((error as? NetworkError)?.userMessage ?? "Не получилось удалить компонент, попробуйте еще раз")
             }
         }
     }

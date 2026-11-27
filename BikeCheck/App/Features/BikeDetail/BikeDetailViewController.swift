@@ -16,6 +16,7 @@ final class BikeDetailViewController: UIViewController {
     //MARK: - Callbacks
     var onAddTapped: (() -> Void)?
     var onComponentTapped: ((Int) -> Void)?
+    var onComponentDeleted: (() -> Void)?
     
     // MARK: - Initializers
     init(viewModel: BikeDetailViewModel) {
@@ -72,6 +73,10 @@ final class BikeDetailViewController: UIViewController {
             bikeDetailView.configureStats(mileage: "-", weight: bike.totalWeightG.kilosText)
             bikeDetailView.tableView.reloadData()
         }
+        
+        viewModel.onComponentDeleted = { [weak self] in
+            self?.onComponentDeleted?()
+        }
     }
     
     private func setupNavigationBar() {
@@ -124,5 +129,26 @@ extension BikeDetailViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         let component = viewModel.components[indexPath.row]
         onComponentTapped?(component.id)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: "Удалить") { action, view, completion in
+            let component = self.viewModel.components[indexPath.row]
+            let alert = UIAlertController(title: nil, message: "Вы действительно хотите удалить \(component.catalog.name)?", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
+                self.viewModel.delete(componentId: component.id)
+                completion(true)
+            }
+            
+            let cancelAction = UIAlertAction(title: "Отмена", style: .cancel) { _ in
+                completion(false)
+            }
+            
+            alert.addAction(okAction)
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true)
+        }
+        
+        return UISwipeActionsConfiguration(actions: [action])
     }
 }
