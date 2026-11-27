@@ -47,7 +47,7 @@ final class LoginViewController: UIViewController {
         }
         
         loginView.onSubmitTap = { [weak self] in
-            self?.viewModel.login()
+            self?.viewModel.submit()
         }
         
         loginView.onSwitchModeTap = { [weak self] in
@@ -70,7 +70,7 @@ final class LoginViewController: UIViewController {
             self?.showError(message)
         }
         
-        viewModel.onLoginEnabledChange = { [weak self] isEnabled in
+        viewModel.onSubmitEnabledChange = { [weak self] isEnabled in
             self?.loginView.setSubmitEnabled(isEnabled)
         }
         

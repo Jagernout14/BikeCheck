@@ -38,7 +38,7 @@ final class LoginViewModel {
     var onSuccess: (() -> Void)?
     var onLoading: ((Bool) -> Void)?
     var onError: ((String) -> Void)?
-    var onLoginEnabledChange: ((Bool) -> Void)?
+    var onSubmitEnabledChange: ((Bool) -> Void)?
     
     // MARK: - Initializers
     init(client: NetworkClient, tokenStorage: TokenStorageProtocol) {
@@ -69,6 +69,39 @@ final class LoginViewModel {
         }
     }
     
+    func register() {
+        guard !isLoading else { return }
+        isLoading = true
+        onLoading?(true)
+        Task { [weak self] in
+            guard let self else { return }
+            defer {
+                isLoading = false
+                onLoading?(false)
+            }
+            do {
+                let registerResponse: AuthResponse = try await client.request(AuthEndpoint.register(Credentials(email: email, password: password)))
+                try tokenStorage.save(registerResponse.accessToken)
+                onSuccess?()
+            } catch NetworkError.serverError(statusCode: 409, _) {
+                onError?("Этот email занят, попробуйте другой")
+            } catch NetworkError.serverError(statusCode: 422, _) {
+                onError?("Проверьте email и пароль")
+            } catch {
+                onError?((error as? NetworkError)?.userMessage ?? "Проблемы с регистрацией, попробуйте еще раз")
+            }
+        }
+    }
+    
+    func submit() {
+        switch mode {
+        case .login:
+            login()
+        case .register:
+            register()
+        }
+    }
+    
     func toggleMode() {
         confirmPassword = ""
         mode = mode == .login ? .register : .login
@@ -87,6 +120,6 @@ final class LoginViewModel {
             isValid = email.contains("@") && password.count >= 8 && password == confirmPassword
         }
         
-        onLoginEnabledChange?(isValid)
+        onSubmitEnabledChange?(isValid)
     }
 }
