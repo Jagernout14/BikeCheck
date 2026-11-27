@@ -65,7 +65,7 @@ final class ServiceDetailViewController: UIViewController {
         ]
         
         if let bikeName = serviceDetailDisplay.bikeName {
-            infoRows.append(InfoRow(text: "Велосипед", secondaryText: bikeName))
+            infoRows.insert(InfoRow(text: "Велосипед", secondaryText: bikeName), at: 1)
         }
     }
 }
@@ -99,7 +99,7 @@ extension ServiceDetailViewController: UITableViewDataSource {
         switch indexPath.section {
         case 0:
             let cell = tableView.dequeueReusableCell(withIdentifier: "infoCell", for: indexPath)
-            let row = infoRows[indexPath.row] //зачем тут row
+            let row = infoRows[indexPath.row]
             var content = UIListContentConfiguration.valueCell()
             content.text = row.text
             content.secondaryText = row.secondaryText
@@ -111,7 +111,7 @@ extension ServiceDetailViewController: UITableViewDataSource {
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: "infoCell", for: indexPath)
             var content = cell.defaultContentConfiguration()
-            content.text = serviceDetailDisplay.note ?? "-"
+            content.text = serviceDetailDisplay.note ?? "—"
             content.textProperties.color = .bcTextMain
             content.textProperties.numberOfLines = 0
             cell.backgroundColor = .bcCard
