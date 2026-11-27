@@ -76,6 +76,7 @@ final class LoginView: UIView {
         case .register:
             hintLabel.isHidden = false
             confirmPasswordField.isHidden = false
+            confirmPasswordField.text = ""
             submitButton.setTitle("Создать аккаунт", for: .normal)
             switchModeButton.setTitle("Есть аккаунт? Войти", for: .normal)
             stackView.setCustomSpacing(6, after: passwordField)

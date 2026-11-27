@@ -70,6 +70,7 @@ final class LoginViewModel {
     }
     
     func toggleMode() {
+        confirmPassword = ""
         mode = mode == .login ? .register : .login
         onModeChange?(mode)
     }
