@@ -25,6 +25,7 @@ final class LoginView: UIView {
     var onPasswordChange: ((String) -> Void)?
     var onSubmitTap: (() -> Void)?
     var onSwitchModeTap: (() -> Void)?
+    var onConfirmPasswordChange: ((String) -> Void)?
     
     // MARK: - Initializers
     override init(frame: CGRect) {
@@ -51,6 +52,10 @@ final class LoginView: UIView {
     
     @objc private func switchModeTapped() {
         onSwitchModeTap?()
+    }
+    
+    @objc private func confirmPasswordChanged() {
+        onConfirmPasswordChange?(confirmPasswordField.text ?? "")
     }
     
     // MARK: - Public Methods
@@ -80,6 +85,7 @@ final class LoginView: UIView {
     func setLoading(_ isLoading: Bool) {
         emailField.isEnabled = !isLoading
         passwordField.isEnabled = !isLoading
+        confirmPasswordField.isEnabled = !isLoading
         switchModeButton.isEnabled = !isLoading
         
         let canSubmit = !isLoading && isSubmitEnabled
@@ -203,6 +209,7 @@ final class LoginView: UIView {
     private func setupActions() {
         emailField.addTarget(self, action: #selector(emailChanged), for: .editingChanged)
         passwordField.addTarget(self, action: #selector(passwordChanged), for: .editingChanged)
+        confirmPasswordField.addTarget(self, action: #selector(confirmPasswordChanged), for: .editingChanged)
         submitButton.addTarget(self, action: #selector(submitTapped), for: .touchUpInside)
         switchModeButton.addTarget(self, action: #selector(switchModeTapped), for: .touchUpInside)
     }
