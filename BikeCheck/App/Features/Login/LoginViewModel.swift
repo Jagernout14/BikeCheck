@@ -8,6 +8,8 @@
 final class LoginViewModel {
     
     // MARK: - Public Properties
+    private(set) var mode: LoginMode = .login
+    
     var email = "" {
         didSet {
             validateForm()
@@ -26,6 +28,7 @@ final class LoginViewModel {
     private var isLoading = false
     
     // MARK: - Callbacks
+    var onModeChange: ((LoginMode) -> Void)?
     var onSuccess: (() -> Void)?
     var onLoading: ((Bool) -> Void)?
     var onError: ((String) -> Void)?
@@ -58,6 +61,11 @@ final class LoginViewModel {
                 onError?((error as? NetworkError)?.userMessage ?? "Войти не удалось. Попробуйте еще раз")
             }
         }
+    }
+    
+    func toggleMode() {
+        mode = mode == .login ? .register : .login
+        onModeChange?(mode)
     }
     
     // MARK: - Private Methods
