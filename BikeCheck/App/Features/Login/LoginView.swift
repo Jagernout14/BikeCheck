@@ -60,6 +60,23 @@ final class LoginView: UIView {
         submitButton.alpha = isEnabled ? 1 : 0.5
     }
     
+    func setMode(_ mode: LoginMode) {
+        switch mode {
+        case .login:
+            hintLabel.isHidden = true
+            confirmPasswordField.isHidden = true
+            submitButton.setTitle("Войти", for: .normal)
+            switchModeButton.setTitle("Зарегистрироваться", for: .normal)
+            stackView.setCustomSpacing(24, after: passwordField)
+        case .register:
+            hintLabel.isHidden = false
+            confirmPasswordField.isHidden = false
+            submitButton.setTitle("Создать аккаунт", for: .normal)
+            switchModeButton.setTitle("Есть аккаунт? Войти", for: .normal)
+            stackView.setCustomSpacing(6, after: passwordField)
+        }
+    }
+    
     func setLoading(_ isLoading: Bool) {
         emailField.isEnabled = !isLoading
         passwordField.isEnabled = !isLoading
@@ -68,7 +85,6 @@ final class LoginView: UIView {
         let canSubmit = !isLoading && isSubmitEnabled
         submitButton.isEnabled = canSubmit
         submitButton.alpha = canSubmit ? 1 : 0.5
-        
     }
     
     // MARK: - Private Methods
