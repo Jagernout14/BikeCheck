@@ -7,9 +7,15 @@
 
 import Foundation
 
-struct ComponentRow {
+struct InfoRow {
     let text: String
     let secondaryText: String
+}
+
+struct ServiceRow {
+    let text: String
+    let secondaryText: String
+    let note: String?
 }
 
 final class ComponentViewModel {
@@ -17,8 +23,8 @@ final class ComponentViewModel {
     //MARK: - Public Properties
     private(set) var component: Component?
     private(set) var services: [ServiceRecord] = []
-    private(set) var infoRows: [ComponentRow] = []
-    private(set) var serviceRows: [ComponentRow] = []
+    private(set) var infoRows: [InfoRow] = []
+    private(set) var serviceRows: [ServiceRow] = []
     
     var screenTitle: String {
         component?.catalog.name ?? ""
@@ -60,17 +66,28 @@ final class ComponentViewModel {
         }
     }
     
+    func makeServiceDetailDisplay(at index: Int) -> ServiceDetailDisplay {
+        let service = services[index]
+        return ServiceDetailDisplay(
+            bikeName: nil,
+            componentName: screenTitle,
+            dateOfService: DateFormatter.makeDateString(from: service.doneAt),
+            mileage: "\(service.mileageKm) км",
+            note: service.note
+        )
+    }
+    
     //MARK: - Private Methods
     private func makeRows() {
         guard let component else { return }
         infoRows = [
-            ComponentRow(text: "Вес", secondaryText: component.catalog.weightG?.gramsText ?? "-"),
-            ComponentRow(text: "Установлен", secondaryText: DateFormatter.makeDateString(from: component.installedAt)),
-            ComponentRow(text: "Последнее обслуживание", secondaryText: component.lastServiceAt.map { DateFormatter.makeDateString(from: $0) } ?? "-")
+            InfoRow(text: "Вес", secondaryText: component.catalog.weightG?.gramsText ?? "-"),
+            InfoRow(text: "Установлен", secondaryText: DateFormatter.makeDateString(from: component.installedAt)),
+            InfoRow(text: "Последнее обслуживание", secondaryText: component.lastServiceAt.map { DateFormatter.makeDateString(from: $0) } ?? "-")
         ]
         
         serviceRows = services.map { service in
-            ComponentRow(text: "\(service.mileageKm) км", secondaryText: DateFormatter.makeDateString(from: service.doneAt))
+            ServiceRow(text: "\(service.mileageKm) км", secondaryText: DateFormatter.makeDateString(from: service.doneAt), note: service.note)
         }
     }
 }

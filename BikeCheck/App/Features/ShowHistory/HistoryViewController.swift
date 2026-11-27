@@ -13,6 +13,9 @@ final class HistoryViewController: UIViewController {
     private let historyView = HistoryView()
     private let viewModel: HistoryViewModel
     
+    //MARK: - Callbacks
+    var onServiceTapped: ((ServiceDetailDisplay) -> Void)?
+    
     //MARK: - Initializers
     init(viewModel: HistoryViewModel) {
         self.viewModel = viewModel
@@ -69,6 +72,7 @@ final class HistoryViewController: UIViewController {
 
 //MARK: - TableViewDataSource
 extension HistoryViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.services.count
     }
@@ -94,5 +98,11 @@ extension HistoryViewController: UITableViewDelegate {
         if indexPath.row == viewModel.services.count - 1 {
             viewModel.load()
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let serviceDisplay = viewModel.makeServiceDetailDisplay(at: indexPath.row)
+        onServiceTapped?(serviceDisplay)
     }
 }

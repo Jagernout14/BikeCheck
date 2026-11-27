@@ -5,6 +5,8 @@
 //  Created by Роман Пичугин on 25.11.2026.
 //
 
+import Foundation
+
 final class HistoryViewModel {
     
     //MARK: - Public Properties
@@ -54,5 +56,16 @@ final class HistoryViewModel {
         services = []
         total = 0
         load()
+    }
+    
+    func makeServiceDetailDisplay(at index: Int) -> ServiceDetailDisplay {
+        let item = services[index]
+        return ServiceDetailDisplay(
+            bikeName: item.bikeName,
+            componentName: item.componentName,
+            dateOfService: DateFormatter.makeDateString(from: item.doneAt),
+            mileage: "\(item.mileageKm) км",
+            note: item.note
+        )
     }
 }

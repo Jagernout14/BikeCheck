@@ -67,6 +67,11 @@ final class MainTabBarController: UITabBarController {
         
         let historyViewModel = HistoryViewModel(client: client)
         let historyViewController = HistoryViewController(viewModel: historyViewModel)
+        historyViewController.onServiceTapped = { [weak self, weak historyViewController] display in
+            guard let self, let historyViewController else { return }
+            openServiceDetailScreen(display: display, source: historyViewController)
+        }
+        
         let historyNavigationController = UINavigationController(rootViewController: historyViewController)
         historyNavigationController.tabBarItem = UITabBarItem(
             title: "История",
@@ -157,6 +162,11 @@ extension MainTabBarController {
             }
         }
         
+        componentViewController.onServiceTapped = { [weak self, weak componentViewController] display in
+            guard let self, let componentViewController else { return }
+            openServiceDetailScreen(display: display, source: componentViewController)
+        }
+        
         navigationController.pushViewController(componentViewController, animated: true)
     }
     
@@ -186,5 +196,12 @@ extension MainTabBarController {
         }
         
         source.present(addServiceNavigationController, animated: true)
+    }
+    
+    private func openServiceDetailScreen(display: ServiceDetailDisplay, source: UIViewController) {
+        let serviceDetailViewController = ServiceDetailViewController(serviceDetailDisplay: display)
+        let serviceDetailNavigationController = UINavigationController(rootViewController: serviceDetailViewController)
+        setupNavigationBar(for: serviceDetailNavigationController)
+        source.present(serviceDetailNavigationController, animated: true)
     }
 }
