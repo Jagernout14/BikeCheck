@@ -47,7 +47,24 @@ final class LoginViewModel {
     }
     
     // MARK: - Public Methods
-    func login() {
+    func submit() {
+        switch mode {
+        case .login:
+            login()
+        case .register:
+            register()
+        }
+    }
+    
+    func toggleMode() {
+        confirmPassword = ""
+        mode = mode == .login ? .register : .login
+        onModeChange?(mode)
+        validateForm()
+    }
+    
+    // MARK: - Private Methods
+    private func login() {
         guard !isLoading else { return }
         isLoading = true
         onLoading?(true)
@@ -69,7 +86,7 @@ final class LoginViewModel {
         }
     }
     
-    func register() {
+    private func register() {
         guard !isLoading else { return }
         isLoading = true
         onLoading?(true)
@@ -93,23 +110,6 @@ final class LoginViewModel {
         }
     }
     
-    func submit() {
-        switch mode {
-        case .login:
-            login()
-        case .register:
-            register()
-        }
-    }
-    
-    func toggleMode() {
-        confirmPassword = ""
-        mode = mode == .login ? .register : .login
-        onModeChange?(mode)
-        validateForm()
-    }
-    
-    // MARK: - Private Methods
     private func validateForm() {
         let isValid: Bool
         
